@@ -51,3 +51,8 @@ test("long text is trimmed", () => {
 test("spaces written as plus signs are understood", () => {
   assert.equal(decodeState("#v=Saucy+Sue").vessel, "Saucy Sue");
 });
+
+test("long lists of readings survive", () => {
+  const readings = Array.from({ length: 36 }, (_, i) => [i * 10, (i % 7) - 3.5]);
+  assert.deepEqual(decodeState(encodeState({ ...emptyState(), readings })).readings, readings);
+});

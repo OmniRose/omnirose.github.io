@@ -37,9 +37,9 @@ function parseNumber(text) {
   return Number.isFinite(n) ? n : NaN;
 }
 
-function decodeText(text) {
+function decodeText(text, maxLength = MAX_TEXT_LENGTH) {
   try {
-    return decodeURIComponent(text.replace(/\+/g, " ")).slice(0, MAX_TEXT_LENGTH);
+    return decodeURIComponent(text.replace(/\+/g, " ")).slice(0, maxLength);
   } catch {
     return "";
   }
@@ -60,7 +60,7 @@ export function decodeState(hash) {
     if (key === "v") state.vessel = decodeText(value);
     else if (key === "n") state.note = decodeText(value);
     else if (key === "r") {
-      state.readings = decodeText(value)
+      state.readings = decodeText(value, Infinity)
         .split(",")
         .slice(0, MAX_READINGS)
         .map((pair) => pair.split(":"))
@@ -71,7 +71,7 @@ export function decodeState(hash) {
       const terms = parseInt(value, 10);
       if ([3, 5, 7, 9, 11, 13].includes(terms)) state.terms = terms;
     } else if (key === "var") {
-      const [from, to] = decodeText(value).split(",").map(parseNumber);
+      const [from, to] = decodeText(value, Infinity).split(",").map(parseNumber);
       if (Number.isFinite(from) && Number.isFinite(to)) {
         state.variation = [Math.max(-180, Math.min(180, from)), Math.max(-180, Math.min(180, to))];
       }

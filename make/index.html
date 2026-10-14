@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Make your deviation table · OmniRose</title>
+  <meta name="description" content="Enter your compass deviation readings and print a deviation table and conversion rose for your boat. Free, no sign-up.">
+  <link rel="icon" href="../img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/site.css">
+  <meta property="og:title" content="Make your deviation table · OmniRose">
+  <meta property="og:description" content="Turn your compass deviation readings into a printable deviation table and conversion rose. Free, no sign-up.">
+  <meta property="og:image" content="https://omnirose.github.io/img/og.png">
+  <script type="module" src="../js/make.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../"><img src="../img/icon.svg" alt="">OmniRose</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="./" aria-current="page">Make your table</a>
+        <a href="../learn/deviation.html">What is deviation?</a>
+        <a href="../learn/swinging.html">Swinging a compass</a>
+        <a href="../learn/using-the-rose.html">Using your rose</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <h1>Make your deviation table</h1>
+      <p class="lede">Type in your deviation readings and out comes a tidy deviation table and a conversion rose, ready to print, laminate and keep at the chart table.</p>
+
+      <noscript><p class="callout warm">This tool needs JavaScript. Everything happens in your browser and nothing is sent anywhere.</p></noscript>
+
+      <div class="tool-layout">
+        <div>
+          <section class="card" aria-labelledby="boat-heading">
+            <h2 id="boat-heading"><span class="step">1</span>Your boat</h2>
+            <div class="form-row">
+              <div>
+                <label for="vessel">Boat's name</label>
+                <input id="vessel" maxlength="80" placeholder="e.g. Saucy Sue" autocomplete="off">
+              </div>
+              <div>
+                <label for="note">Which compass? <span class="hint">(optional)</span></label>
+                <input id="note" maxlength="80" placeholder="e.g. Steering compass" autocomplete="off">
+              </div>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="readings-heading">
+            <h2 id="readings-heading"><span class="step">2</span>Your readings</h2>
+            <p class="hint">For each <strong>magnetic</strong> heading you pointed the boat at, enter how far the compass was off.
+              If the compass showed <em>less</em> than the magnetic heading the deviation is <strong>East</strong>; if it showed <em>more</em>, it's <strong>West</strong>.
+              <a href="../learn/swinging.html">How do I get these?</a></p>
+
+            <div class="toolbar">
+              <label class="visually-hidden" for="example">Try an example</label>
+              <select id="example">
+                <option value="">Try an example…</option>
+              </select>
+              <button type="button" data-fill="45">Every 45°</button>
+              <button type="button" data-fill="30">Every 30°</button>
+              <button type="button" data-fill="22.5">Every 22.5°</button>
+              <span class="spacer"></span>
+              <button type="button" id="clear">Start again</button>
+            </div>
+
+            <table class="readings">
+              <thead>
+                <tr>
+                  <th scope="col">Ship's heading<br><span class="hint">magnetic</span></th>
+                  <th scope="col" colspan="2">Deviation</th>
+                  <th scope="col"><span class="visually-hidden">Remove</span></th>
+                </tr>
+              </thead>
+              <tbody id="reading-rows"></tbody>
+            </table>
+            <p><button type="button" id="add-row">+ Add a reading</button></p>
+            <ul class="messages" id="messages" aria-live="polite"></ul>
+          </section>
+        </div>
+
+        <div class="sticky">
+          <section class="card" aria-labelledby="preview-heading">
+            <h2 id="preview-heading"><span class="step">3</span>Check the curve</h2>
+            <div class="tabs" role="tablist" aria-label="Preview">
+              <button type="button" role="tab" aria-selected="true" data-view="magnetic">Deviation table</button>
+              <button type="button" role="tab" aria-selected="false" data-view="compass">Combined table</button>
+              <button type="button" role="tab" aria-selected="false" data-view="rose">Conversion rose</button>
+            </div>
+            <div class="preview" id="preview" role="tabpanel" aria-live="off">
+              <p class="empty">Enter at least three readings, or try an example, and your table will appear here.</p>
+            </div>
+            <p class="hint" id="fit-summary"></p>
+            <details class="advanced">
+              <summary>Advanced: curve terms</summary>
+              <p class="hint">OmniRose draws a smooth curve through your readings, using the simplest curve that fits them well. More terms let the curve wiggle more; that only helps if you have lots of careful readings.</p>
+              <label for="terms">Curve terms</label>
+              <select id="terms"></select>
+            </details>
+          </section>
+        </div>
+      </div>
+
+      <section class="card" aria-labelledby="print-heading">
+        <h2 id="print-heading"><span class="step">4</span>Print it</h2>
+        <div class="downloads grid-2">
+          <div class="download-group">
+            <h3>Deviation tables</h3>
+            <p class="hint">The <strong>deviation table</strong> is the classic chart-table card. The <strong>combined table</strong> also has compass headings on the right, so you can look up either kind of heading directly.</p>
+            <p class="toolbar">
+              <button type="button" class="primary" data-download="magnetic">Deviation table (PDF)</button>
+              <button type="button" class="primary" data-download="compass">Combined table (PDF)</button>
+            </p>
+          </div>
+          <div class="download-group">
+            <h3>Conversion roses</h3>
+            <p class="hint">One page for each degree of variation. You'll find the variation for your area printed in the compass rose on your chart.</p>
+            <div class="range" role="group" aria-label="Variation range">
+              <span>From</span>
+              <label class="visually-hidden" for="var-from">Variation from, degrees</label>
+              <input type="number" id="var-from" min="0" max="90" step="1" value="0" inputmode="numeric">
+              <label class="visually-hidden" for="var-from-dir">Variation from, direction</label>
+              <select id="var-from-dir"><option value="-1">°W</option><option value="1">°E</option></select>
+              <span>to</span>
+              <label class="visually-hidden" for="var-to">Variation to, degrees</label>
+              <input type="number" id="var-to" min="0" max="90" step="1" value="0" inputmode="numeric">
+              <label class="visually-hidden" for="var-to-dir">Variation to, direction</label>
+              <select id="var-to-dir"><option value="-1">°W</option><option value="1">°E</option></select>
+            </div>
+            <p class="toolbar">
+              <button type="button" class="primary" data-download="rose" id="rose-button">Conversion roses (PDF)</button>
+            </p>
+            <p class="hint" id="rose-hint"></p>
+          </div>
+        </div>
+        <p class="hint">Print at <strong>actual size</strong> (100%), not "fit to page", so the rose isn't squashed. The pages fit both A4 and US Letter.</p>
+      </section>
+
+      <section class="card" aria-labelledby="keep-heading">
+        <h2 id="keep-heading"><span class="step">5</span>Keep it</h2>
+        <p>There's no account and nothing is stored on a server. <strong>This page's link is your saved table:</strong> bookmark it, or send it to yourself or your crew. The QR code on every printout opens it again too.</p>
+        <div class="share">
+          <label class="visually-hidden" for="share-url">Link to these readings</label>
+          <input id="share-url" readonly>
+          <button type="button" id="copy-link">Copy link</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="../about.html">About</a></p>
+      <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
+    </div>
+  </footer>
+</body>
+</html>
