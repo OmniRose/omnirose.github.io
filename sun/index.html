@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swing your compass by the sun · OmniRose</title>
+  <meta name="description" content="Measure your compass deviation with a printed sun pelorus and a drinks can. Enter the time, compass and shadow readings and OmniRose works out the deviation.">
+  <link rel="icon" href="../img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/site.css">
+  <meta property="og:title" content="Swing your compass by the sun · OmniRose">
+  <meta property="og:description" content="All you need is sunshine, a printout and a drinks can.">
+  <meta property="og:image" content="https://omnirose.github.io/img/og.png">
+  <script type="module" src="../js/sun-page.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../"><img src="../img/icon.svg" alt="">OmniRose</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../make/">Make your table</a>
+        <a href="./" aria-current="page">Swing by the sun</a>
+        <a href="../learn/deviation.html">What is deviation?</a>
+        <a href="../learn/swinging.html">Swinging a compass</a>
+        <a href="../learn/using-the-rose.html">Using your rose</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <h1>Swing your compass by the sun</h1>
+      <p class="lede">No landmarks, no transits, no helpers on the shore: just sunshine, a printout and a drinks can. The sun's position is known exactly for any moment and place, so its shadow tells you which way the boat is really pointing.</p>
+
+      <noscript><p class="callout warm">This tool needs JavaScript. Everything happens in your browser and nothing is sent anywhere.</p></noscript>
+
+      <div class="tool-layout">
+        <section class="card" aria-labelledby="print-heading">
+          <h2 id="print-heading"><span class="step">1</span>Print the pelorus</h2>
+          <p>A <strong>pelorus</strong> is a compass card without a magnet. Ours is numbered so that wherever the can's shadow falls, the number under it is the sun's bearing from the bow.</p>
+          <p class="toolbar"><button type="button" class="primary" id="download-pelorus">Download the sun pelorus (PDF)</button></p>
+          <p class="hint">Print at actual size (100%). The check bar should measure 100 mm.</p>
+          <h3>You'll also need</h3>
+          <ul>
+            <li>A drinks can (an ordinary 330 ml one, not dented).</li>
+            <li>Something flat and stiff to mount the card on, such as a clipboard, plus tape.</li>
+            <li>Your phone, which keeps accurate time and knows where you are.</li>
+            <li>A sunny day with calm water. Mornings and afternoons are best; around midday the shadow is short and the sun moves fast.</li>
+          </ul>
+        </section>
+
+        <section class="card" aria-labelledby="preview-heading">
+          <h2 id="preview-heading" class="visually-hidden">Pelorus preview</h2>
+          <div class="preview" id="pelorus-preview"></div>
+        </section>
+      </div>
+
+      <section class="card prose" aria-labelledby="setup-heading" style="max-width:none">
+        <h2 id="setup-heading"><span class="step">2</span>Set it up</h2>
+        <ol>
+          <li><strong>Mount the card level</strong> somewhere in full sun, clear of the shadows of the mast, rigging and sprayhood. On the coachroof or a cockpit seat works well. Tilting the card throws the reading off, especially when the sun is high.</li>
+          <li><strong>Line up the BOW line</strong> exactly parallel to the boat's centreline, pointing forwards. Sight along it to the forestay or the middle of the bow, or use a straight edge against a fore-and-aft bulkhead. Every degree of misalignment is a degree of error on every reading.</li>
+          <li><strong>Stand the can</strong> on the circle that fits it.</li>
+          <li><strong>Steer a steady heading</strong> and wait for the compass to settle. Then, at the same moment, note the <strong>time</strong>, the <strong>compass</strong> heading, and where the shadow crosses the scale.</li>
+          <li><strong>Read both edges of the shadow</strong> where they cross the outer scale (or the inner one if the shadow is short), and enter them like <code>112/124</code>. OmniRose averages them, which is more accurate than guessing the middle.</li>
+          <li><strong>Turn to the next heading</strong> and repeat, all the way round: every 30° or 45° is plenty.</li>
+        </ol>
+        <p class="hint">Tip: use the "Now" button as you read the compass. It stamps the time from your phone's clock, which is accurate to the second.</p>
+      </section>
+
+      <section class="card" aria-labelledby="where-heading">
+        <h2 id="where-heading"><span class="step">3</span>Where and when</h2>
+        <div class="form-row">
+          <div>
+            <label for="vessel">Boat's name</label>
+            <input id="vessel" maxlength="80" placeholder="e.g. Saucy Sue" autocomplete="off">
+          </div>
+          <div>
+            <label for="note">Which compass? <span class="hint">(optional)</span></label>
+            <input id="note" maxlength="80" placeholder="e.g. Steering compass" autocomplete="off">
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:16px">
+          <div>
+            <label for="lat">Latitude</label>
+            <input id="lat" placeholder="e.g. 50°47.2'N" autocomplete="off" inputmode="text">
+            <span class="hint" id="lat-hint"></span>
+          </div>
+          <div>
+            <label for="lon">Longitude</label>
+            <input id="lon" placeholder="e.g. 001°18.0'W" autocomplete="off" inputmode="text">
+            <span class="hint" id="lon-hint"></span>
+          </div>
+        </div>
+        <p class="toolbar"><button type="button" id="locate">Use my location</button> <span class="hint" id="locate-hint">A rough position is fine: a mile or two makes no real difference.</span></p>
+        <div class="form-row">
+          <div>
+            <label for="date">Date</label>
+            <input id="date" type="date">
+          </div>
+          <div>
+            <label for="tz">Your clock is</label>
+            <select id="tz"></select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:16px">
+          <div>
+            <label for="variation">Variation</label>
+            <div class="range">
+              <input id="variation" type="number" step="any" min="0" max="90" inputmode="decimal" aria-describedby="variation-hint">
+              <select id="variation-dir" aria-label="Variation direction"><option value="-1">°W</option><option value="1">°E</option></select>
+            </div>
+            <span class="hint" id="variation-hint">Enter your position and date to work it out, or type it in from your chart.</span>
+          </div>
+          <div>
+            <details class="advanced" style="margin-top:0">
+              <summary>Advanced: pelorus correction</summary>
+              <p class="hint">If you know the BOW line isn't quite fore-and-aft (say from a reading on a known heading, alongside a charted quay), enter the degrees to add to every shadow reading.</p>
+              <input id="pc" type="number" step="any" inputmode="decimal" aria-label="Pelorus correction in degrees" value="0">
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="readings-heading">
+        <h2 id="readings-heading"><span class="step">4</span>Your readings</h2>
+        <div id="observations" class="observations"></div>
+        <p class="toolbar">
+          <button type="button" class="primary" id="add-now">+ Add a reading now</button>
+          <button type="button" id="add-blank">+ Add a reading for another time</button>
+        </p>
+        <ul class="messages" id="sun-messages" aria-live="polite"></ul>
+      </section>
+
+      <section class="card" aria-labelledby="result-heading">
+        <h2 id="result-heading"><span class="step">5</span>Make your deviation table</h2>
+        <p id="result-summary">Once you have a few readings, they'll be turned into deviations here.</p>
+        <p class="toolbar"><a class="button primary" id="to-table" href="../make/" aria-disabled="true">Make my deviation table</a></p>
+        <p class="hint">Your readings are saved in this page's link as you go, so you can bookmark it and carry on later.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="../about.html">About</a></p>
+      <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -7,6 +7,7 @@ import { displayable, textWidth, toWinAnsi } from "../js/draw/font.js";
 import { drawRoses } from "../js/draw/rose.js";
 import { PdfSurface, SvgSurface } from "../js/draw/surface.js";
 import { drawTable } from "../js/draw/table.js";
+import { drawPelorus, pelorusLabel } from "../js/draw/pelorus.js";
 import { qrMatrix } from "../js/qr.js";
 import { samples } from "./fixtures/samples.js";
 
@@ -90,4 +91,15 @@ test("QR codes have the right size and finder patterns", () => {
       assert.ok(!m[y + 1][x + 1] && !m[y + 5][x + 5]);
     }
   }
+});
+
+test("the sun pelorus renders, numbered so the shadow reads the sun's relative bearing", () => {
+  const pdf = new PdfSurface(PAGE_WIDTH, PAGE_HEIGHT);
+  drawPelorus(pdf);
+  assertWellFormedPdf(pdf.toString(), 1);
+  // Shadow pointing to the stern means the sun is dead ahead.
+  assert.equal(pelorusLabel(180), 0);
+  // Sun on the starboard beam throws the shadow to port.
+  assert.equal(pelorusLabel(270), 90);
+  assert.equal(pelorusLabel(0), 180);
 });

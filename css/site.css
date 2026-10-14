@@ -597,6 +597,90 @@ label {
   color: var(--muted);
 }
 
+.observations {
+  display: grid;
+  gap: 10px;
+}
+
+.obs {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.obs-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 14px;
+}
+
+.obs-inputs label {
+  display: grid;
+  gap: 2px;
+  font-size: 0.85rem;
+}
+
+.obs-inputs span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 400;
+}
+
+.obs-inputs .time {
+  width: 7.5em;
+}
+
+.obs-inputs .shadow {
+  width: 8em;
+}
+
+.obs-inputs .remove {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+  margin-left: auto;
+}
+
+.obs-inputs .now {
+  padding: 7px 10px;
+}
+
+.obs-result p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.obs-working b {
+  font-variant-numeric: tabular-nums;
+}
+
+.obs-working .dev {
+  color: var(--coral);
+}
+
+.obs-warning {
+  background: var(--sea-soft);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+button.link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--sea);
+  text-decoration: underline;
+  font-size: inherit;
+}
+
+a.button[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 details.advanced {
   margin-top: 16px;
 }
