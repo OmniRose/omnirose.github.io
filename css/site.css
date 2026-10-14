@@ -546,6 +546,40 @@ label {
   width: 5em;
 }
 
+.where-toolbar {
+  margin: 4px 0 0;
+}
+
+.where-toolbar select {
+  flex: 1 1 200px;
+}
+
+.custom-area {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+
+.custom-area label {
+  font-weight: 400;
+}
+
+.custom-area .edge {
+  display: flex;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.custom-area input[type="number"] {
+  width: 5em;
+}
+
+.custom-area p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
 .share {
   display: flex;
   gap: 8px;

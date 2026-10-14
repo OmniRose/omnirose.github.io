@@ -1,5 +1,11 @@
 # OmniRose relaunch — Phase 1 implementation plan
 
+> **Status (2026-10-14):** M0–M8 are built on the `relaunch` branch. Still to do, and needing the owner: push, rename the repo, enable Pages, and add `data/WMM.COF` (WMM2025). Changes from the plan:
+> - jsPDF and a QR library were **not** vendored. A small PDF writer (`js/draw/surface.js`) and QR encoder (`js/qr.js`) were written instead, so there are no third-party files to download or keep up to date.
+> - Automatic curve terms use the Bayesian information criterion (up to 7 terms), not a fixed "half the readings" cap.
+> - Compass to magnetic now evaluates deviation at the magnetic heading; the old code used the compass heading (up to 3.9° out on boats with large deviation).
+> - M8 offers preset areas, "use my location" and a custom lat/long box, rather than a map.
+
 ## Goal
 
 A free, friendly static site at **https://omnirose.github.io/** that teaches cruising sailors why their compass lies to them, and turns their deviation readings into a printable **deviation table** and **conversion rose**.

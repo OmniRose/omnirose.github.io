@@ -118,6 +118,36 @@
           <div class="download-group">
             <h3>Conversion roses</h3>
             <p class="hint">One page for each degree of variation. You'll find the variation for your area printed in the compass rose on your chart.</p>
+            <div id="where" hidden>
+              <label for="region">Where are you sailing?</label>
+              <div class="toolbar where-toolbar">
+                <select id="region"><option value="">Pick an area…</option></select>
+                <button type="button" id="use-location">Use my location</button>
+              </div>
+              <details class="advanced">
+                <summary>Somewhere else</summary>
+                <form id="custom-area" class="custom-area">
+                <label>North edge
+                  <span class="edge"><input type="number" name="north" min="0" max="180" step="any" inputmode="decimal" required>
+                  <select name="north-dir" aria-label="North edge direction"><option value="1">°N</option><option value="-1">°S</option></select></span>
+                </label>
+                <label>South edge
+                  <span class="edge"><input type="number" name="south" min="0" max="180" step="any" inputmode="decimal" required>
+                  <select name="south-dir" aria-label="South edge direction"><option value="1">°N</option><option value="-1">°S</option></select></span>
+                </label>
+                <label>West edge
+                  <span class="edge"><input type="number" name="west" min="0" max="180" step="any" inputmode="decimal" required>
+                  <select name="west-dir" aria-label="West edge direction"><option value="-1">°W</option><option value="1">°E</option></select></span>
+                </label>
+                <label>East edge
+                  <span class="edge"><input type="number" name="east" min="0" max="180" step="any" inputmode="decimal" required>
+                  <select name="east-dir" aria-label="East edge direction"><option value="-1">°W</option><option value="1">°E</option></select></span>
+                </label>
+                  <p><button type="submit">Work it out</button></p>
+                </form>
+              </details>
+              <p class="hint" id="where-result" aria-live="polite"></p>
+            </div>
             <div class="range" role="group" aria-label="Variation range">
               <span>From</span>
               <label class="visually-hidden" for="var-from">Variation from, degrees</label>

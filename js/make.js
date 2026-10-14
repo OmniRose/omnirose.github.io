@@ -7,6 +7,7 @@ import { PdfSurface, SvgSurface } from "./draw/surface.js";
 import { drawTable, tableTitle } from "./draw/table.js";
 import { examples } from "./examples.js";
 import { decodeState, encodeState } from "./state.js";
+import { setupWhere } from "./where.js";
 
 const MAX_ROSE_PAGES = 10;
 
@@ -129,7 +130,7 @@ let pending = false;
 function scheduleUpdate() {
   if (pending) return;
   pending = true;
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     pending = false;
     update();
   });
@@ -431,3 +432,11 @@ function load() {
 
 wire();
 load();
+setupWhere({
+  container: $("#where"),
+  modelUrl: new URL("../data/WMM.COF", import.meta.url),
+  onRange: (range) => {
+    setVariation(range);
+    scheduleUpdate();
+  },
+});
