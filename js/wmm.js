@@ -78,14 +78,14 @@ export class MagneticModel {
     return this.epoch + 5;
   }
 
-  // Declination in degrees (east positive) at sea level for geodetic
-  // latitude and longitude in degrees and a decimal year.
-  declination(latitude, longitude, year) {
-    const { x, y } = this.field(latitude, longitude, year);
+  // Declination in degrees (east positive) for geodetic latitude and
+  // longitude in degrees, a decimal year and altitude in km (default sea level).
+  declination(latitude, longitude, year, altitude = 0) {
+    const { x, y } = this.field(latitude, longitude, year, altitude);
     return (Math.atan2(y, x) * 180) / Math.PI;
   }
 
-  // North (x) and east (y) components of the field in nT at sea level.
+  // North (x) and east (y) components of the field in nT.
   field(latitude, longitude, year, altitude = 0) {
     const N = this.maxDegree;
     const dt = year - this.epoch;

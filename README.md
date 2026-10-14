@@ -66,7 +66,7 @@ Some details worth knowing:
 - **The maths.** Deviation is modelled as a Fourier series in the heading, `A + B sin θ + C cos θ + D sin 2θ + E cos 2θ + …`, fitted by least squares (Householder QR). The number of terms is chosen with the Bayesian information criterion, up to 7, and can be overridden by the user. Readings are against **magnetic** headings, and easterly deviation and variation are positive.
 - **The table and rose are drawn once, through a small surface interface** with an SVG implementation for the on-screen preview and a PDF implementation for downloads, so the two always match. The PDF writer uses the built-in Helvetica font with WinAnsi encoding, so no fonts are embedded; characters outside Windows-1252 print as `?`.
 - **Page size** is 590 × 790 pt, which fits both A4 and US Letter.
-- **Magnetic variation** for the "Where are you sailing?" helper comes from NOAA's World Magnetic Model, evaluated in the browser from `data/WMM.COF`. The helper hides itself if that file is missing. The maths is checked against NOAA's official test values for WMM2015 (`tests/fixtures/WMM2015.COF`, kept for testing only).
+- **Magnetic variation** for the "Where are you sailing?" helper comes from NOAA's World Magnetic Model, evaluated in the browser from `data/WMM.COF`. The helper hides itself if that file is missing. The code is checked against all 100 of NOAA's official WMM2025 test values, and the WMM2015 ones (`tests/fixtures/WMM2015.COF`, kept for testing only). The model expires at the end of 2029; see `data/README.md`.
 - **The URL format** is documented at the top of `js/state.js`. Old links must keep working, so only ever add to it.
 
 ## History

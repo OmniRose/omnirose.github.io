@@ -6,6 +6,7 @@ Each model is valid for five years, so this file needs replacing every five year
 
 1. Download the new coefficients from the NOAA page above (the `WMM.COF` file inside the "WMM20xx COF" download).
 2. Replace `data/WMM.COF` with it.
-3. Run `node --test`. The "site's magnetic model loads" test checks it parses and gives sensible answers.
+3. Replace `tests/fixtures/WMM2025_TestValues.txt` with the new model's test values file from the same download, and update the epoch checks in `tests/wmm.test.js`.
+4. Run `node --test`. It checks the model against all of NOAA's official test values.
 
 The model is produced by NOAA and the British Geological Survey and is in the public domain.

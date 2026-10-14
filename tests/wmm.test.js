@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 
 import { MagneticModel, decimalYear, pagesForRange, parseCof } from "../js/wmm.js";
 import { regions } from "../js/regions.js";
@@ -58,12 +58,21 @@ test("every preset region is a sensible box", () => {
   }
 });
 
-// The model the site actually uses, if it has been added.
-const current = new URL("../data/WMM.COF", import.meta.url);
-test("the site's magnetic model loads", { skip: !existsSync(current) && "data/WMM.COF not added yet" }, () => {
-  const model = new MagneticModel(readFileSync(current, "utf8"));
-  assert.ok(model.epoch >= 2025);
-  // Sanity check: variation in the English Channel is a few degrees either side of zero.
-  const dec = model.declination(50.5, -2, model.epoch);
-  assert.ok(Math.abs(dec) < 5, `${dec}`);
+// The model the site uses, checked against NOAA's 100 official WMM2025 test values.
+test("the site's model matches the official WMM2025 test values", () => {
+  const model = new MagneticModel(readFileSync(new URL("../data/WMM.COF", import.meta.url), "utf8"));
+  assert.equal(model.epoch, 2025);
+  assert.equal(model.validUntil, 2030);
+
+  const lines = readFileSync(new URL("./fixtures/WMM2025_TestValues.txt", import.meta.url), "utf8")
+    .split("\n")
+    .filter((line) => line.trim() && !line.startsWith("#"));
+  assert.equal(lines.length, 100);
+  for (const line of lines) {
+    const [year, altitude, lat, lon, declination, , , x, y] = line.trim().split(/\s+/).map(Number);
+    const field = model.field(lat, lon, year, altitude);
+    assert.ok(Math.abs(field.x - x) < 0.01 && Math.abs(field.y - y) < 0.01, `field at ${lat},${lon} ${year}`);
+    // The file gives declination to two decimal places.
+    assert.ok(Math.abs(model.declination(lat, lon, year, altitude) - declination) <= 0.0051, `declination at ${lat},${lon} ${year}`);
+  }
 });
