@@ -11,11 +11,11 @@ import { PAGE_HEIGHT, PAGE_WIDTH, GREY, drawFooter, drawTextBlock } from "./comm
 const MM = 72 / 25.4;
 const CX = PAGE_WIDTH / 2;
 const CY = 430;
-const OUTER = 228; // outer scale radius
-const INNER = 150; // inner scale radius
-const CANS = [
-  { radius: 33 * MM, label: "standard can (66 mm)", dash: false },
-  { radius: 29 * MM, label: "slim can (58 mm)", dash: true },
+export const OUTER = 228; // outer scale radius, points
+export const INNER = 150; // inner scale radius, points
+export const CANS = [
+  { name: "standard", radius: 33 * MM, label: "standard can (66 mm)", dash: false },
+  { name: "slim", radius: 29 * MM, label: "slim can (58 mm)", dash: true },
 ];
 const INK = [0, 0, 0];
 const LIGHT = [0.55, 0.55, 0.55];

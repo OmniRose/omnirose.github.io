@@ -64,6 +64,8 @@ test("shadow readings", () => {
   close(parseShadow("355/5"), 0, 1e-9);
   assert.ok(Number.isNaN(parseShadow("")));
   assert.ok(Number.isNaN(parseShadow("abc")));
+  close(parseShadow("94/142"), 118, 1e-9);
+  close(parseShadow("80/157"), 118.5, 1e-9); // inner scale, standard can
   assert.ok(Number.isNaN(parseShadow("10/200")), "edges far apart are a typo");
   assert.ok(Number.isNaN(parseShadow("400")));
 });
@@ -122,4 +124,18 @@ test("coordinates", async () => {
   assert.equal(formatCoordinate(-1.3, "lon"), "001°18.00'W");
   assert.equal(formatCoordinate(-36.85, "lat"), "36°51.00'S");
   close(parseCoordinate(formatCoordinate(-122.4194, "lon"), "lon"), -122.4194, 1e-3);
+});
+
+test("shadow edge gaps are checked against the can and scale sizes", async () => {
+  const { shadowEdgeWarning, EDGE_GAPS } = await import("../js/sunswing.js");
+  const gap = (ring, can) => EDGE_GAPS.find((e) => e.ring === ring && e.can === can).gap;
+  close(gap("outer", "standard"), 48.4, 0.1);
+  close(gap("inner", "standard"), 77.2, 0.1);
+  close(gap("outer", "slim"), 42.3, 0.1);
+  close(gap("inner", "slim"), 66.5, 0.1);
+  assert.equal(shadowEdgeWarning("94/142"), null);
+  assert.equal(shadowEdgeWarning("80/157"), null);
+  assert.equal(shadowEdgeWarning("118"), null);
+  assert.match(shadowEdgeWarning("112/124"), /12° apart/);
+  assert.match(shadowEdgeWarning("60/120"), /same scale/);
 });

@@ -12,6 +12,7 @@ import {
   parseCoordinate,
   parseShadow,
   reduceObservation,
+  shadowEdgeWarning,
   toUtc,
 } from "./sunswing.js";
 import { MagneticModel, decimalYear } from "./wmm.js";
@@ -100,7 +101,7 @@ function addObservation({ time = "", compass = "", shadow = "" } = {}, { focus }
         <span><input class="compass" type="number" min="0" max="360" step="any" inputmode="decimal">°</span>
       </label>
       <label>Shadow
-        <span><input class="shadow" placeholder="e.g. 112/124" inputmode="decimal" autocomplete="off"></span>
+        <span><input class="shadow" placeholder="e.g. 94/142" inputmode="decimal" autocomplete="off"></span>
       </label>
       <button type="button" class="remove" aria-label="Remove this reading" title="Remove">×</button>
     </div>
@@ -242,7 +243,7 @@ function update() {
     if (!obs.compass) missing.push("compass");
     else if (!Number.isFinite(compass) || compass < 0 || compass > 360) wrong.push("The compass reading should be from 0 to 360.");
     if (!obs.shadow) missing.push("shadow");
-    else if (!Number.isFinite(shadow)) wrong.push("The shadow should be one number like 118, or two edges like 112/124.");
+    else if (!Number.isFinite(shadow)) wrong.push("The shadow should be one number like 118, or two edges like 94/142.");
     if (missing.length || wrong.length) {
       const text = [...wrong, missing.length ? `Still to fill in: ${missing.join(", ")}.` : ""].join(" ").trim();
       out.append(Object.assign(document.createElement("p"), { className: "hint", textContent: text }));
@@ -267,7 +268,8 @@ function update() {
       `heading <b>${r.trueHeading.toFixed(1)}°T</b>, <b>${r.magneticHeading.toFixed(1)}°M</b> → ` +
       `deviation <b class="dev">${eastWest(Math.round(r.deviation * 10) / 10)}</b>`;
     out.append(working);
-    for (const w of r.warnings) out.append(Object.assign(document.createElement("p"), { className: "obs-warning", textContent: w }));
+    const edgeWarning = shadowEdgeWarning(obs.shadow);
+    for (const w of edgeWarning ? [edgeWarning, ...r.warnings] : r.warnings) out.append(Object.assign(document.createElement("p"), { className: "obs-warning", textContent: w }));
   }
 
   els.messages.replaceChildren(...messages);

@@ -14,6 +14,7 @@
 // deviation table tool.
 
 import { mod360 } from "./curve.js";
+import { CANS, INNER, OUTER } from "./draw/pelorus.js";
 import { azimuthRate, sunPosition } from "./sun.js";
 
 // Signed difference a - b, between -180 and 180.
@@ -29,8 +30,10 @@ export function circularMean(angles) {
 }
 
 // A shadow reading: one number for the middle of the shadow, or two (e.g.
-// "112/124" or "112 124") for where each edge crosses the scale, which are
-// averaged. The edges are more precise to read than the middle.
+// "94/142" or "94 142") for where each edge crosses the scale, which are
+// averaged. The edges are easier to read precisely than the middle. Because
+// the edges are a can's radius either side of the centre line, they are a
+// long way apart: about 48° on the outer scale with a standard can.
 export function parseShadow(text) {
   const parts = String(text)
     .trim()
@@ -38,8 +41,35 @@ export function parseShadow(text) {
     .filter(Boolean)
     .map(Number);
   if (!parts.length || parts.length > 2 || !parts.every((n) => Number.isFinite(n) && n >= 0 && n <= 360)) return NaN;
-  if (parts.length === 2 && Math.abs(angleDifference(parts[0], parts[1])) > 60) return NaN;
+  if (parts.length === 2 && Math.abs(angleDifference(parts[0], parts[1])) > 120) return NaN;
   return parts.length === 1 ? mod360(parts[0]) : circularMean(parts);
+}
+
+// How far apart the two shadow edges should be for each can on each scale.
+export const EDGE_GAPS = [OUTER, INNER].flatMap((ring) =>
+  CANS.map((can) => ({
+    ring: ring === OUTER ? "outer" : "inner",
+    can: can.name,
+    gap: (2 * Math.asin(can.radius / ring) * 180) / Math.PI,
+  })),
+);
+
+// A warning if two edge readings are an unlikely distance apart, which
+// usually means they were read on different scales or the can isn't
+// centred. Returns null if all is well.
+export function shadowEdgeWarning(text) {
+  const parts = String(text).trim().split(/[\s/,;]+/).filter(Boolean).map(Number);
+  if (parts.length !== 2 || !Number.isFinite(parseShadow(text))) return null;
+  const gap = Math.abs(angleDifference(parts[0], parts[1]));
+  const nearest = Math.min(...EDGE_GAPS.map((e) => Math.abs(e.gap - gap)));
+  if (nearest <= 6) return null;
+  const outer = EDGE_GAPS.find((e) => e.ring === "outer" && e.can === "standard").gap;
+  const inner = EDGE_GAPS.find((e) => e.ring === "inner" && e.can === "standard").gap;
+  return (
+    `The shadow edges are ${Math.round(gap)}° apart, but with a standard can they should be about ` +
+    `${Math.round(outer)}° apart on the outer scale or ${Math.round(inner)}° on the inner one. ` +
+    "Were both edges read on the same scale, and is the can centred on its circle?"
+  );
 }
 
 // Parse "HH:MM" or "HH:MM:SS" into seconds after midnight.
