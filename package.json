@@ -1,0 +1,11 @@
+{
+  "name": "omnirose",
+  "private": true,
+  "description": "Free deviation tables and conversion roses for your boat's compass.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python3 -m http.server 8000"
+  }
+}
