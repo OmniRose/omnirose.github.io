@@ -250,7 +250,7 @@ function update() {
   const offset = Number.isFinite(diameter) ? edgeOffset(diameter, els.scale.value) : NaN;
   els.canOther.hidden = els.can.value !== "other";
   els.offsetHint.textContent = Number.isFinite(offset)
-    ? `With this can, the shadow edge reads ${offset.toFixed(1)}° past the sun's bearing; OmniRose takes that off.`
+    ? `With this can, the shadow edge reads ${offset.toFixed(1)}° short of the sun's bearing; OmniRose adds that back.`
     : "";
 
   const messages = [];

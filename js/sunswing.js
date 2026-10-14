@@ -1,13 +1,13 @@
 // Swinging the compass by the sun.
 //
 // A drinks can stands on the OmniRose sun pelorus, which is lined up with
-// the boat's centreline. We read where the clockwise edge of the can's
-// shadow crosses the scale; taking off the edge offset for the can and
-// scale (see draw/pelorus.js) gives the sun's bearing relative to the bow.
+// the boat's centreline. We read where the anticlockwise edge of the can's
+// shadow crosses the scale; adding the edge offset for the can and scale
+// (see draw/pelorus.js) gives the sun's bearing relative to the bow.
 // Knowing when and where the reading was taken gives the sun's true bearing
 // (azimuth), and so the boat's true heading:
 //
-//   sun's relative bearing = edge reading - edge offset + pelorus correction
+//   sun's relative bearing = edge reading + edge offset + pelorus correction
 //   true heading     = sun azimuth - sun's relative bearing
 //   magnetic heading = true heading - variation        (east positive)
 //   deviation        = magnetic heading - compass reading
@@ -66,7 +66,7 @@ export function reduceObservation({
   pelorusCorrection = 0,
 }) {
   const { azimuth, altitude } = sunPosition(date, latitude, longitude);
-  const sunRelative = mod360(shadow - offset + pelorusCorrection);
+  const sunRelative = mod360(shadow + offset + pelorusCorrection);
   const trueHeading = mod360(azimuth - sunRelative);
   const magneticHeading = mod360(trueHeading - variation);
   const deviation = angleDifference(magneticHeading, compass);

@@ -8,13 +8,14 @@
 //
 // The shadow is as wide as the can, so its edges run parallel to that line,
 // a can's radius either side of it. With the boat moving it's only practical
-// to read one thing at a time, so we read the clockwise edge, which crosses a
-// scale of radius R at the sun's bearing plus asin(can radius / R). The
-// tool takes that off again.
+// to read one thing at a time, so we read the anticlockwise edge, which
+// crosses a scale of radius R at the sun's bearing minus asin(can radius / R).
+// The tool adds that back.
 //
 // The "snail" in the middle shows this: a family of can-sized circles, each
-// running into the line its clockwise shadow edge follows when the sun is
-// dead ahead. It's also a gauge for measuring an unusual can.
+// running into the line its anticlockwise shadow edge follows when the sun
+// is dead ahead (down the starboard side, which suits right-handed readers).
+// It's also a gauge for measuring an unusual can.
 
 import { PAGE_HEIGHT, PAGE_WIDTH, GREY, drawFooter, drawTextBlock } from "./common.js";
 
@@ -28,8 +29,8 @@ export const MM_TO_POINTS = MM;
 const SNAIL_DIAMETERS = [50, 54, 58, 62, 66, 70, 74, 78, 82];
 const BOLD_DIAMETERS = [58, 66];
 
-// How far (degrees) the clockwise shadow edge of a can of this diameter (mm)
-// reads past the sun's bearing on the given scale ("outer" or "inner").
+// How far (degrees) the anticlockwise shadow edge of a can of this diameter
+// (mm) reads short of the sun's bearing on the given scale ("outer" or "inner").
 export function edgeOffset(diameterMm, scale = "outer") {
   const radius = (diameterMm / 2) * MM;
   const ring = scale === "inner" ? INNER : OUTER;
@@ -76,13 +77,13 @@ function scale(surface, radius, { outward, labelEvery, tickScale }) {
 export function drawPelorus(surface) {
   // Title and instructions.
   drawTextBlock(surface, "OmniRose sun pelorus", 22, 42);
-  drawTextBlock(surface, "Where the can's shadow crosses the scale is the sun's bearing from the bow.", 10, 60, { color: GREY });
+  drawTextBlock(surface, "Read where the anticlockwise edge of the can's shadow crosses the scale.", 10, 60, { color: GREY });
 
   const steps = [
     ["1. Print at actual size (100%).", "The bar at the bottom should", "measure exactly 100 mm."],
     ["2. Stick it to something flat and", "fix it level, with the BOW line", "parallel to the centreline."],
     ["3. Stand a can on the circle that", "fits it, and note its size. Use the", "same scale for the whole swing."],
-    ["4. Hold each heading until the compass", "settles. Then note the time, the compass,", "and the clockwise edge of the shadow."],
+    ["4. Hold each heading until the compass", "settles. Then note the time, the compass,", "and the anticlockwise edge of the shadow."],
   ];
   steps.forEach((lines, i) => {
     const x = i % 2 === 0 ? 30 : PAGE_WIDTH - 30;
@@ -114,16 +115,16 @@ export function drawPelorus(surface) {
     const r = (diameter / 2) * MM;
     const bold = BOLD_DIAMETERS.includes(diameter);
     const style = { width: bold ? 0.9 : 0.35, color: bold ? INK : LIGHT };
-    // From the outer scale, straight up the port side to where the line
-    // meets the circle, then round over the top to the starboard side.
+    // From the outer scale, straight up the starboard side to where the line
+    // meets the circle, then round over the top to the port side.
     const end = Math.sqrt(OUTER * OUTER - r * r);
-    const path = [[CX - r, CY + end]];
-    for (let angle = 270; angle <= 450; angle += 3) path.push(point(angle, r));
+    const path = [[CX + r, CY + end]];
+    for (let angle = 90; angle >= -90; angle -= 3) path.push(point(angle, r));
     surface.polyline(path, style);
-    // Size label just below where each circle ends on the starboard side.
-    surface.text(String(diameter), CX + r - 1.6, CY + 3, { size: 4.5, color: bold ? INK : LIGHT, angle: 90 });
+    // Size label just below where each circle ends on the port side.
+    surface.text(String(diameter), CX - r - 1.6, CY + 3, { size: 4.5, color: bold ? INK : LIGHT, angle: 90 });
   }
-  surface.text("can diameter (mm)", CX + 25 * MM, CY + 20, { size: 5.5, color: LIGHT });
+  surface.text("can diameter (mm)", CX - 25 * MM, CY + 20, { size: 5.5, color: LIGHT, align: "right" });
   surface.line(CX - 6, CY, CX + 6, CY, { width: 0.4, color: LIGHT });
   surface.line(CX, CY - 6, CX, CY + 6, { width: 0.4, color: LIGHT });
 

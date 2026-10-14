@@ -18,14 +18,14 @@ import {
 
 const close = (a, b, tol, msg) => assert.ok(Math.abs(a - b) <= tol, `${msg ?? ""} ${a} vs ${b}`);
 
-// Where the clockwise edge of a can's shadow crosses a scale ring, found by
+// Where the anticlockwise edge of a can's shadow crosses a scale ring, found by
 // intersecting the edge line with the circle directly (not with the formula
 // the code uses). Returns the number printed on the card at that point.
-function clockwiseEdgeReading(sunRelative, diameterMm, ringRadius) {
+function anticlockwiseEdgeReading(sunRelative, diameterMm, ringRadius) {
   const rad = Math.PI / 180;
   const shadowDirection = sunRelative + 180; // physical angle, clockwise from the bow
   const d = [Math.sin(shadowDirection * rad), -Math.cos(shadowDirection * rad)];
-  const n = [Math.sin((shadowDirection + 90) * rad), -Math.cos((shadowDirection + 90) * rad)];
+  const n = [Math.sin((shadowDirection - 90) * rad), -Math.cos((shadowDirection - 90) * rad)];
   const r = (diameterMm / 2) * MM_TO_POINTS;
   const t = Math.sqrt(ringRadius ** 2 - r ** 2);
   const p = [r * n[0] + t * d[0], r * n[1] + t * d[1]];
@@ -49,7 +49,7 @@ test("a simulated swing gives back the boat's deviations", () => {
       const magnetic = mod360(trueHeading - variation);
       const compass = boat.magneticToCompass(magnetic);
       const { azimuth } = sunPosition(date, latitude, longitude);
-      const shadow = clockwiseEdgeReading(mod360(azimuth - trueHeading), diameter, ring);
+      const shadow = anticlockwiseEdgeReading(mod360(azimuth - trueHeading), diameter, ring);
 
       const result = reduceObservation({
         date, latitude, longitude, compass, shadow, variation, offset: edgeOffset(diameter, scale),
