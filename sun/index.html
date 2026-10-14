@@ -37,7 +37,7 @@
       <div class="tool-layout">
         <section class="card" aria-labelledby="print-heading">
           <h2 id="print-heading"><span class="step">1</span>Print the pelorus</h2>
-          <p>A <strong>pelorus</strong> is a compass card without a magnet. Ours is numbered so that wherever the can's shadow falls, the number under it is the sun's bearing from the bow.</p>
+          <p>A <strong>pelorus</strong> is a compass card without a magnet. Ours is numbered from the sun's point of view: read where the edge of the can's shadow falls and OmniRose turns it into the sun's bearing from the bow.</p>
           <p class="toolbar"><button type="button" class="primary" id="download-pelorus">Download the sun pelorus (PDF)</button></p>
           <p class="hint">Print at actual size (100%). The check bar should measure 100 mm.</p>
           <h3>You'll also need</h3>
@@ -60,12 +60,13 @@
         <ol>
           <li><strong>Mount the card level</strong> somewhere in full sun, clear of the shadows of the mast, rigging and sprayhood. On the coachroof or a cockpit seat works well. Tilting the card throws the reading off, especially when the sun is high.</li>
           <li><strong>Line up the BOW line</strong> exactly parallel to the boat's centreline, pointing forwards. Sight along it to the forestay or the middle of the bow, or use a straight edge against a fore-and-aft bulkhead. Every degree of misalignment is a degree of error on every reading.</li>
-          <li><strong>Stand the can</strong> on the circle that fits it.</li>
-          <li><strong>Steer a steady heading</strong> and wait for the compass to settle. Then, at the same moment, note the <strong>time</strong>, the <strong>compass</strong> heading, and where the shadow crosses the scale.</li>
-          <li><strong>Read both edges of the shadow</strong> where they cross the outer scale (or the inner one if the shadow is short), and enter them like <code>94/142</code>. Read both on the <em>same</em> scale. The shadow is as wide as the can, so its edges never pass through the centre and are a long way apart (about 48° on the outer scale with a standard can). OmniRose averages them to find the middle, whatever size your can is.</li>
+          <li><strong>Stand the can</strong> on the circle of the "snail" that fits it, and note its diameter. Most drinks cans are 66 mm; slim ones are 58 mm.</li>
+          <li><strong>Steer a steady heading and let the compass settle.</strong> A compass card swings and lags after every turn, so hold the heading steadily for at least 10 to 20 seconds, until the card has stopped moving, before you read anything. A reading taken while it's still swinging puts a false deviation into your table.</li>
+          <li><strong>Then, at the same moment, read three things:</strong> the <strong>time</strong> (tap "Now"), the <strong>compass</strong>, and where the <strong>clockwise edge of the shadow</strong> crosses the scale. That's the edge on the clockwise side of the shadow, normally the one with the higher number. Always read that same edge, on the same scale, for the whole swing.</li>
           <li><strong>Turn to the next heading</strong> and repeat, all the way round: every 30° or 45° is plenty.</li>
         </ol>
-        <p class="hint">Tip: use the "Now" button as you read the compass. It stamps the time from your phone's clock, which is accurate to the second.</p>
+        <p class="callout"><strong>Why only one edge?</strong> The boat never stays perfectly still, so you can only really read one thing at a time. The shadow is as wide as the can, so its edges run either side of the sun's line, never through the middle. The snail on the card shows this: each can circle runs into the line its shadow edge follows. OmniRose knows your can size and scale and takes the offset off for you.</p>
+        <p class="hint">Tip: tap "Now" at the moment you read the compass. It stamps the time from your phone's clock, which is accurate to the second.</p>
       </section>
 
       <section class="card" aria-labelledby="where-heading">
@@ -124,6 +125,28 @@
 
       <section class="card" aria-labelledby="readings-heading">
         <h2 id="readings-heading"><span class="step">4</span>Your readings</h2>
+        <div class="form-row" style="margin-bottom:16px">
+          <div>
+            <label for="can">Your can</label>
+            <div class="range">
+              <select id="can">
+                <option value="66">Standard can (66 mm)</option>
+                <option value="58">Slim can (58 mm)</option>
+                <option value="other">Another size…</option>
+              </select>
+              <span id="can-other" hidden><input id="can-mm" type="number" min="20" max="150" step="any" inputmode="decimal" aria-label="Can diameter in mm"> mm</span>
+            </div>
+          </div>
+          <div>
+            <label for="scale">Reading on the</label>
+            <select id="scale">
+              <option value="outer">Outer scale</option>
+              <option value="inner">Inner scale (shorter shadows)</option>
+            </select>
+            <span class="hint" id="offset-hint"></span>
+          </div>
+        </div>
+        <p class="callout warm" style="margin-top:0"><strong>Let the compass settle</strong> on each heading before reading: hold it steady for 10 to 20 seconds, until the card stops moving.</p>
         <div id="observations" class="observations"></div>
         <p class="toolbar">
           <button type="button" class="primary" id="add-now">+ Add a reading now</button>

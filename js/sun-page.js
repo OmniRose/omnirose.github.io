@@ -10,9 +10,10 @@ import {
   encodeSwing,
   formatCoordinate,
   parseCoordinate,
+  DEFAULT_CAN,
+  edgeOffset,
   parseShadow,
   reduceObservation,
-  shadowEdgeWarning,
   toUtc,
 } from "./sunswing.js";
 import { MagneticModel, decimalYear } from "./wmm.js";
@@ -34,6 +35,11 @@ const els = {
   variationDir: $("#variation-dir"),
   variationHint: $("#variation-hint"),
   pc: $("#pc"),
+  can: $("#can"),
+  canOther: $("#can-other"),
+  canMm: $("#can-mm"),
+  scale: $("#scale"),
+  offsetHint: $("#offset-hint"),
   observations: $("#observations"),
   messages: $("#sun-messages"),
   summary: $("#result-summary"),
@@ -100,8 +106,8 @@ function addObservation({ time = "", compass = "", shadow = "" } = {}, { focus }
       <label>Compass
         <span><input class="compass" type="number" min="0" max="360" step="any" inputmode="decimal">°</span>
       </label>
-      <label>Shadow
-        <span><input class="shadow" placeholder="e.g. 94/142" inputmode="decimal" autocomplete="off"></span>
+      <label>Shadow edge
+        <span><input class="shadow" type="number" min="0" max="360" step="any" inputmode="decimal">°</span>
       </label>
       <button type="button" class="remove" aria-label="Remove this reading" title="Remove">×</button>
     </div>
@@ -135,8 +141,23 @@ function currentState() {
     offsetMinutes: Number(els.tz.value),
     variationOverride: variationIsManual ? manualVariation() : NaN,
     pelorusCorrection: Number(els.pc.value) || 0,
+    canDiameter: canDiameter(),
+    scale: els.scale.value,
     observations: readObservations().map(({ time, compass, shadow }) => ({ time, compass, shadow })),
   };
+}
+
+function canDiameter() {
+  if (els.can.value !== "other") return Number(els.can.value);
+  const mm = Number(els.canMm.value);
+  return els.canMm.value.trim() !== "" && mm >= 20 && mm <= 150 ? mm : NaN;
+}
+
+function setCan(diameter) {
+  const preset = ["66", "58"].includes(String(diameter));
+  els.can.value = preset ? String(diameter) : "other";
+  els.canMm.value = preset ? "" : formatNumber(diameter);
+  els.canOther.hidden = preset;
 }
 
 function manualVariation() {
@@ -160,6 +181,8 @@ function load() {
   variationIsManual = Number.isFinite(state.variationOverride);
   if (variationIsManual) setVariationInputs(state.variationOverride);
   els.pc.value = state.pelorusCorrection || 0;
+  setCan(state.canDiameter ?? DEFAULT_CAN);
+  els.scale.value = state.scale;
   els.observations.replaceChildren();
   state.observations.forEach((o) => addObservation(o));
   if (!state.observations.length) addObservation();
@@ -223,7 +246,15 @@ function update() {
   els.lonHint.textContent = els.lon.value && !Number.isFinite(longitude) ? "Not sure what that is: try 001°18.0'W or -1.3" : "";
   const variation = currentVariation(latitude, longitude);
 
+  const diameter = canDiameter();
+  const offset = Number.isFinite(diameter) ? edgeOffset(diameter, els.scale.value) : NaN;
+  els.canOther.hidden = els.can.value !== "other";
+  els.offsetHint.textContent = Number.isFinite(offset)
+    ? `With this can, the shadow edge reads ${offset.toFixed(1)}° past the sun's bearing; OmniRose takes that off.`
+    : "";
+
   const messages = [];
+  if (!Number.isFinite(offset)) messages.push(li("Enter your can's diameter in millimetres.", "warning"));
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) messages.push(li("Enter your position (step 3) to work out the sun's bearing.", "warning"));
   else if (!Number.isFinite(variation)) messages.push(li("Enter the variation (step 3).", "warning"));
 
@@ -242,14 +273,14 @@ function update() {
     else if (!date) wrong.push("The time should look like 14:05:30.");
     if (!obs.compass) missing.push("compass");
     else if (!Number.isFinite(compass) || compass < 0 || compass > 360) wrong.push("The compass reading should be from 0 to 360.");
-    if (!obs.shadow) missing.push("shadow");
-    else if (!Number.isFinite(shadow)) wrong.push("The shadow should be one number like 118, or two edges like 94/142.");
+    if (!obs.shadow) missing.push("shadow edge");
+    else if (!Number.isFinite(shadow)) wrong.push("The shadow edge should be a number from 0 to 360.");
     if (missing.length || wrong.length) {
       const text = [...wrong, missing.length ? `Still to fill in: ${missing.join(", ")}.` : ""].join(" ").trim();
       out.append(Object.assign(document.createElement("p"), { className: "hint", textContent: text }));
       continue;
     }
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || !Number.isFinite(variation)) continue;
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || !Number.isFinite(variation) || !Number.isFinite(offset)) continue;
 
     const r = reduceObservation({
       date,
@@ -258,18 +289,18 @@ function update() {
       compass,
       shadow,
       variation,
+      offset,
       pelorusCorrection: Number(els.pc.value) || 0,
     });
     results.push(r);
     const working = document.createElement("p");
     working.className = "obs-working";
     working.innerHTML =
-      `Sun bearing <b>${r.azimuth.toFixed(1)}°T</b>, ${Math.round(r.altitude)}° up → ` +
+      `Sun ${r.sunRelative.toFixed(1)}° from the bow, bearing <b>${r.azimuth.toFixed(1)}°T</b>, ${Math.round(r.altitude)}° up → ` +
       `heading <b>${r.trueHeading.toFixed(1)}°T</b>, <b>${r.magneticHeading.toFixed(1)}°M</b> → ` +
       `deviation <b class="dev">${eastWest(Math.round(r.deviation * 10) / 10)}</b>`;
     out.append(working);
-    const edgeWarning = shadowEdgeWarning(obs.shadow);
-    for (const w of edgeWarning ? [edgeWarning, ...r.warnings] : r.warnings) out.append(Object.assign(document.createElement("p"), { className: "obs-warning", textContent: w }));
+    for (const w of r.warnings) out.append(Object.assign(document.createElement("p"), { className: "obs-warning", textContent: w }));
   }
 
   els.messages.replaceChildren(...messages);

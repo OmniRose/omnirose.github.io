@@ -2,9 +2,19 @@
 //
 // Line the card up with the boat's centreline and stand a drinks can on the
 // circle in the middle. The shadow points directly away from the sun, so the
-// scale is numbered 180° round from where it's printed: wherever the shadow
-// falls, the number under it is the sun's bearing relative to the bow
-// (0 = dead ahead, 90 = on the starboard beam).
+// scale is numbered 180° round from where it's printed: a line from the
+// centre along the middle of the shadow reads the sun's bearing relative to
+// the bow (0 = dead ahead, 90 = on the starboard beam).
+//
+// The shadow is as wide as the can, so its edges run parallel to that line,
+// a can's radius either side of it. With the boat moving it's only practical
+// to read one thing at a time, so we read the clockwise edge, which crosses a
+// scale of radius R at the sun's bearing plus asin(can radius / R). The
+// tool takes that off again.
+//
+// The "snail" in the middle shows this: a family of can-sized circles, each
+// running into the line its clockwise shadow edge follows when the sun is
+// dead ahead. It's also a gauge for measuring an unusual can.
 
 import { PAGE_HEIGHT, PAGE_WIDTH, GREY, drawFooter, drawTextBlock } from "./common.js";
 
@@ -13,10 +23,18 @@ const CX = PAGE_WIDTH / 2;
 const CY = 430;
 export const OUTER = 228; // outer scale radius, points
 export const INNER = 150; // inner scale radius, points
-export const CANS = [
-  { name: "standard", radius: 33 * MM, label: "standard can (66 mm)", dash: false },
-  { name: "slim", radius: 29 * MM, label: "slim can (58 mm)", dash: true },
-];
+export const MM_TO_POINTS = MM;
+// Can diameters drawn on the snail, in mm; the bold ones are the common sizes.
+const SNAIL_DIAMETERS = [50, 54, 58, 62, 66, 70, 74, 78, 82];
+const BOLD_DIAMETERS = [58, 66];
+
+// How far (degrees) the clockwise shadow edge of a can of this diameter (mm)
+// reads past the sun's bearing on the given scale ("outer" or "inner").
+export function edgeOffset(diameterMm, scale = "outer") {
+  const radius = (diameterMm / 2) * MM;
+  const ring = scale === "inner" ? INNER : OUTER;
+  return (Math.asin(Math.min(radius / ring, 1)) * 180) / Math.PI;
+}
 const INK = [0, 0, 0];
 const LIGHT = [0.55, 0.55, 0.55];
 
@@ -63,8 +81,8 @@ export function drawPelorus(surface) {
   const steps = [
     ["1. Print at actual size (100%).", "The bar at the bottom should", "measure exactly 100 mm."],
     ["2. Stick it to something flat and", "fix it level, with the BOW line", "parallel to the centreline."],
-    ["3. Stand a drinks can on the", "circle that fits it. Keep the", "card in full sun."],
-    ["4. On each heading, note the time,", "the compass, and where each edge", "of the shadow crosses the scale."],
+    ["3. Stand a can on the circle that", "fits it, and note its size. Use the", "same scale for the whole swing."],
+    ["4. Hold each heading until the compass", "settles. Then note the time, the compass,", "and the clockwise edge of the shadow."],
   ];
   steps.forEach((lines, i) => {
     const x = i % 2 === 0 ? 30 : PAGE_WIDTH - 30;
@@ -91,20 +109,21 @@ export function drawPelorus(surface) {
   scale(surface, OUTER, { outward: true, labelEvery: 10, tickScale: 1 });
   scale(surface, INNER, { outward: true, labelEvery: 30, tickScale: 0.8 });
 
-  // Can circles and centre mark.
-  for (const can of CANS) {
-    if (can.dash) {
-      for (let a = 0; a < 360; a += 6) {
-        const [x1, y1] = point(a, can.radius);
-        const [x2, y2] = point(a + 3, can.radius);
-        surface.line(x1, y1, x2, y2, { width: 0.6, color: LIGHT });
-      }
-    } else {
-      surface.circle(CX, CY, can.radius, { stroke: LIGHT, width: 0.6 });
-    }
+  // The snail: can circles, each running into its shadow edge line.
+  for (const diameter of SNAIL_DIAMETERS) {
+    const r = (diameter / 2) * MM;
+    const bold = BOLD_DIAMETERS.includes(diameter);
+    const style = { width: bold ? 0.9 : 0.35, color: bold ? INK : LIGHT };
+    // From the outer scale, straight up the port side to where the line
+    // meets the circle, then round over the top to the starboard side.
+    const end = Math.sqrt(OUTER * OUTER - r * r);
+    const path = [[CX - r, CY + end]];
+    for (let angle = 270; angle <= 450; angle += 3) path.push(point(angle, r));
+    surface.polyline(path, style);
+    // Size label just below where each circle ends on the starboard side.
+    surface.text(String(diameter), CX + r - 1.6, CY + 3, { size: 4.5, color: bold ? INK : LIGHT, angle: 90 });
   }
-  surface.text(CANS[0].label, CX, CY - CANS[0].radius - 4, { size: 6, color: LIGHT, align: "center" });
-  surface.text(CANS[1].label, CX, CY - CANS[1].radius + 9, { size: 6, color: LIGHT, align: "center" });
+  surface.text("can diameter (mm)", CX + 25 * MM, CY + 20, { size: 5.5, color: LIGHT });
   surface.line(CX - 6, CY, CX + 6, CY, { width: 0.4, color: LIGHT });
   surface.line(CX, CY - 6, CX, CY + 6, { width: 0.4, color: LIGHT });
 

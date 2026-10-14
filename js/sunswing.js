@@ -1,11 +1,13 @@
 // Swinging the compass by the sun.
 //
 // A drinks can stands on the OmniRose sun pelorus, which is lined up with
-// the boat's centreline. The pelorus scale is printed so that where the
-// can's shadow falls reads the sun's bearing relative to the bow. Knowing
-// when and where the reading was taken gives the sun's true bearing
+// the boat's centreline. We read where the clockwise edge of the can's
+// shadow crosses the scale; taking off the edge offset for the can and
+// scale (see draw/pelorus.js) gives the sun's bearing relative to the bow.
+// Knowing when and where the reading was taken gives the sun's true bearing
 // (azimuth), and so the boat's true heading:
 //
+//   sun's relative bearing = edge reading - edge offset + pelorus correction
 //   true heading     = sun azimuth - sun's relative bearing
 //   magnetic heading = true heading - variation        (east positive)
 //   deviation        = magnetic heading - compass reading
@@ -14,7 +16,9 @@
 // deviation table tool.
 
 import { mod360 } from "./curve.js";
-import { CANS, INNER, OUTER } from "./draw/pelorus.js";
+import { edgeOffset } from "./draw/pelorus.js";
+
+export { edgeOffset };
 import { azimuthRate, sunPosition } from "./sun.js";
 
 // Signed difference a - b, between -180 and 180.
@@ -22,54 +26,12 @@ export function angleDifference(a, b) {
   return mod360(a - b + 180) - 180;
 }
 
-// Average of angles, done properly around north (350 and 10 average to 0).
-export function circularMean(angles) {
-  const x = angles.reduce((s, a) => s + Math.cos((a * Math.PI) / 180), 0);
-  const y = angles.reduce((s, a) => s + Math.sin((a * Math.PI) / 180), 0);
-  return mod360((Math.atan2(y, x) * 180) / Math.PI);
-}
-
-// A shadow reading: one number for the middle of the shadow, or two (e.g.
-// "94/142" or "94 142") for where each edge crosses the scale, which are
-// averaged. The edges are easier to read precisely than the middle. Because
-// the edges are a can's radius either side of the centre line, they are a
-// long way apart: about 48° on the outer scale with a standard can.
+// A shadow edge reading: a single number from 0 to 360.
 export function parseShadow(text) {
-  const parts = String(text)
-    .trim()
-    .split(/[\s/,;]+/)
-    .filter(Boolean)
-    .map(Number);
-  if (!parts.length || parts.length > 2 || !parts.every((n) => Number.isFinite(n) && n >= 0 && n <= 360)) return NaN;
-  if (parts.length === 2 && Math.abs(angleDifference(parts[0], parts[1])) > 120) return NaN;
-  return parts.length === 1 ? mod360(parts[0]) : circularMean(parts);
-}
-
-// How far apart the two shadow edges should be for each can on each scale.
-export const EDGE_GAPS = [OUTER, INNER].flatMap((ring) =>
-  CANS.map((can) => ({
-    ring: ring === OUTER ? "outer" : "inner",
-    can: can.name,
-    gap: (2 * Math.asin(can.radius / ring) * 180) / Math.PI,
-  })),
-);
-
-// A warning if two edge readings are an unlikely distance apart, which
-// usually means they were read on different scales or the can isn't
-// centred. Returns null if all is well.
-export function shadowEdgeWarning(text) {
-  const parts = String(text).trim().split(/[\s/,;]+/).filter(Boolean).map(Number);
-  if (parts.length !== 2 || !Number.isFinite(parseShadow(text))) return null;
-  const gap = Math.abs(angleDifference(parts[0], parts[1]));
-  const nearest = Math.min(...EDGE_GAPS.map((e) => Math.abs(e.gap - gap)));
-  if (nearest <= 6) return null;
-  const outer = EDGE_GAPS.find((e) => e.ring === "outer" && e.can === "standard").gap;
-  const inner = EDGE_GAPS.find((e) => e.ring === "inner" && e.can === "standard").gap;
-  return (
-    `The shadow edges are ${Math.round(gap)}° apart, but with a standard can they should be about ` +
-    `${Math.round(outer)}° apart on the outer scale or ${Math.round(inner)}° on the inner one. ` +
-    "Were both edges read on the same scale, and is the can centred on its circle?"
-  );
+  const trimmed = String(text).trim();
+  if (!/^\d+(\.\d+)?$/.test(trimmed)) return NaN;
+  const n = Number(trimmed);
+  return n <= 360 ? mod360(n) : NaN;
 }
 
 // Parse "HH:MM" or "HH:MM:SS" into seconds after midnight.
@@ -93,9 +55,18 @@ export function toUtc(dateText, timeText, offsetMinutes) {
 
 // Work out the deviation from one observation. Returns the intermediate
 // values too, so the page can show its working.
-export function reduceObservation({ date, latitude, longitude, compass, shadow, variation, pelorusCorrection = 0 }) {
+export function reduceObservation({
+  date,
+  latitude,
+  longitude,
+  compass,
+  shadow,
+  variation,
+  offset = 0,
+  pelorusCorrection = 0,
+}) {
   const { azimuth, altitude } = sunPosition(date, latitude, longitude);
-  const sunRelative = mod360(shadow + pelorusCorrection);
+  const sunRelative = mod360(shadow - offset + pelorusCorrection);
   const trueHeading = mod360(azimuth - sunRelative);
   const magneticHeading = mod360(trueHeading - variation);
   const deviation = angleDifference(magneticHeading, compass);
@@ -115,9 +86,11 @@ export function reduceObservation({ date, latitude, longitude, compass, shadow, 
 //
 //   #v=<vessel>&n=<note>&lat=<deg>&lon=<deg>&d=YYYY-MM-DD&tz=<minutes>
 //    &var=<variation override>&pc=<pelorus correction>
+//    &cd=<can diameter, mm>&sc=<scale: o (outer) or i (inner)>
 //    &o=<HH:MM:SS>;<compass>;<shadow>,...
 
-const KEYS = ["v", "n", "lat", "lon", "d", "tz", "var", "pc", "o"];
+const KEYS = ["v", "n", "lat", "lon", "d", "tz", "var", "pc", "cd", "sc", "o"];
+export const DEFAULT_CAN = 66;
 
 export function encodeSwing(state) {
   const parts = [];
@@ -134,6 +107,8 @@ export function encodeSwing(state) {
   add("tz", state.offsetMinutes);
   add("var", state.variationOverride);
   add("pc", state.pelorusCorrection || null);
+  add("cd", state.canDiameter && state.canDiameter !== DEFAULT_CAN ? state.canDiameter : null);
+  add("sc", state.scale === "inner" ? "i" : null);
   const rows = (state.observations || [])
     .filter((o) => o.time || o.compass || o.shadow)
     .map((o) => [o.time, o.compass, o.shadow].map((x) => encodeURIComponent(String(x ?? "").trim()).replace(/%2F/gi, "/")).join(";"));
@@ -151,6 +126,8 @@ export function decodeSwing(hash) {
     offsetMinutes: NaN,
     variationOverride: NaN,
     pelorusCorrection: 0,
+    canDiameter: DEFAULT_CAN,
+    scale: "outer",
     observations: [],
   };
   const decode = (text) => {
@@ -175,6 +152,8 @@ export function decodeSwing(hash) {
     else if (key === "tz" && Number.isFinite(num) && Math.abs(num) <= 14 * 60) state.offsetMinutes = num;
     else if (key === "var" && Number.isFinite(num) && Math.abs(num) <= 180) state.variationOverride = num;
     else if (key === "pc" && Number.isFinite(num) && Math.abs(num) <= 180) state.pelorusCorrection = num;
+    else if (key === "cd" && num >= 20 && num <= 150) state.canDiameter = num;
+    else if (key === "sc") state.scale = value === "i" ? "inner" : "outer";
     else if (key === "o") {
       state.observations = value
         .split(",")

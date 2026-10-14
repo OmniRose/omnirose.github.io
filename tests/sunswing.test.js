@@ -4,10 +4,11 @@ import assert from "node:assert/strict";
 import { Curve, mod360 } from "../js/curve.js";
 import { examples } from "../js/examples.js";
 import { sunPosition } from "../js/sun.js";
+import { INNER, MM_TO_POINTS, OUTER } from "../js/draw/pelorus.js";
 import {
   angleDifference,
-  circularMean,
   decodeSwing,
+  edgeOffset,
   encodeSwing,
   parseShadow,
   parseTime,
@@ -17,29 +18,55 @@ import {
 
 const close = (a, b, tol, msg) => assert.ok(Math.abs(a - b) <= tol, `${msg ?? ""} ${a} vs ${b}`);
 
+// Where the clockwise edge of a can's shadow crosses a scale ring, found by
+// intersecting the edge line with the circle directly (not with the formula
+// the code uses). Returns the number printed on the card at that point.
+function clockwiseEdgeReading(sunRelative, diameterMm, ringRadius) {
+  const rad = Math.PI / 180;
+  const shadowDirection = sunRelative + 180; // physical angle, clockwise from the bow
+  const d = [Math.sin(shadowDirection * rad), -Math.cos(shadowDirection * rad)];
+  const n = [Math.sin((shadowDirection + 90) * rad), -Math.cos((shadowDirection + 90) * rad)];
+  const r = (diameterMm / 2) * MM_TO_POINTS;
+  const t = Math.sqrt(ringRadius ** 2 - r ** 2);
+  const p = [r * n[0] + t * d[0], r * n[1] + t * d[1]];
+  const physical = mod360(Math.atan2(p[0], -p[1]) / rad);
+  return mod360(physical + 180);
+}
+
 test("a simulated swing gives back the boat's deviations", () => {
   // Saucy Sue in the Solent on a summer morning, with 1°E variation, turning
-  // through 12 headings two minutes apart.
+  // through 12 headings two minutes apart, read on both scales with two cans.
   const boat = new Curve(examples[1].readings);
   const latitude = 50.78;
   const longitude = -1.3;
   const variation = 1;
   const start = toUtc("2026-07-14", "08:30:00", 60);
 
-  for (let i = 0; i < 12; i++) {
-    const date = new Date(start.getTime() + i * 120000);
-    const trueHeading = i * 30 + 7;
-    const magnetic = mod360(trueHeading - variation);
-    const compass = boat.magneticToCompass(magnetic);
-    const { azimuth } = sunPosition(date, latitude, longitude);
-    const shadow = mod360(azimuth - trueHeading); // what the pelorus shows
+  for (const [diameter, scale, ring] of [[66, "outer", OUTER], [58, "inner", INNER], [73, "outer", OUTER]]) {
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(start.getTime() + i * 120000);
+      const trueHeading = i * 30 + 7;
+      const magnetic = mod360(trueHeading - variation);
+      const compass = boat.magneticToCompass(magnetic);
+      const { azimuth } = sunPosition(date, latitude, longitude);
+      const shadow = clockwiseEdgeReading(mod360(azimuth - trueHeading), diameter, ring);
 
-    const result = reduceObservation({ date, latitude, longitude, compass, shadow, variation });
-    close(result.trueHeading, trueHeading, 1e-9, "true heading");
-    close(result.magneticHeading, magnetic, 1e-9, "magnetic heading");
-    close(result.deviation, boat.deviationAt(magnetic), 1e-9, "deviation");
-    assert.deepEqual(result.warnings, []);
+      const result = reduceObservation({
+        date, latitude, longitude, compass, shadow, variation, offset: edgeOffset(diameter, scale),
+      });
+      close(result.trueHeading, trueHeading, 1e-9, "true heading");
+      close(result.magneticHeading, magnetic, 1e-9, "magnetic heading");
+      close(result.deviation, boat.deviationAt(magnetic), 1e-9, "deviation");
+      assert.deepEqual(result.warnings, []);
+    }
   }
+});
+
+test("edge offsets for the usual cans", () => {
+  close(edgeOffset(66, "outer"), 24.2, 0.05);
+  close(edgeOffset(66, "inner"), 38.6, 0.05);
+  close(edgeOffset(58, "outer"), 21.1, 0.05);
+  close(edgeOffset(58, "inner"), 33.2, 0.05);
 });
 
 test("the pelorus correction is added to the shadow reading", () => {
@@ -57,23 +84,18 @@ test("warnings for a low, high or fast-moving sun", () => {
   assert.ok(tropicalNoon.warnings.some((w) => /to the second/.test(w)));
 });
 
-test("shadow readings", () => {
+test("shadow edge readings", () => {
   assert.equal(parseShadow("112"), 112);
-  close(parseShadow("112/124"), 118, 1e-9);
-  close(parseShadow("112 124"), 118, 1e-9);
-  close(parseShadow("355/5"), 0, 1e-9);
-  assert.ok(Number.isNaN(parseShadow("")));
-  assert.ok(Number.isNaN(parseShadow("abc")));
-  close(parseShadow("94/142"), 118, 1e-9);
-  close(parseShadow("80/157"), 118.5, 1e-9); // inner scale, standard can
-  assert.ok(Number.isNaN(parseShadow("10/200")), "edges far apart are a typo");
-  assert.ok(Number.isNaN(parseShadow("400")));
+  assert.equal(parseShadow(" 47.5 "), 47.5);
+  assert.equal(parseShadow("360"), 0);
+  for (const bad of ["", "abc", "400", "-5", "112/124", "1e2"]) {
+    assert.ok(Number.isNaN(parseShadow(bad)), bad);
+  }
 });
 
 test("angles", () => {
   assert.equal(angleDifference(10, 350), 20);
   assert.equal(angleDifference(350, 10), -20);
-  close(circularMean([350, 20]), 5, 1e-9);
 });
 
 test("times and dates", () => {
@@ -96,13 +118,15 @@ test("state round trip", () => {
     offsetMinutes: 60,
     variationOverride: NaN,
     pelorusCorrection: 1.5,
+    canDiameter: 58,
+    scale: "inner",
     observations: [
-      { time: "08:30:00", compass: "45", shadow: "112/124" },
+      { time: "08:30:00", compass: "45", shadow: "118" },
       { time: "08:32:10", compass: "", shadow: "" },
     ],
   };
   const hash = encodeSwing(state);
-  assert.match(hash, /o=08%3A30%3A00;45;112\/124,08%3A32%3A10;;/);
+  assert.match(hash, /cd=58&sc=i&o=08%3A30%3A00;45;118,08%3A32%3A10;;/);
   assert.deepEqual(decodeSwing(hash), state);
   assert.deepEqual(decodeSwing("#lat=999&tz=x&o=%E0%A4%A").observations, [{ time: "", compass: "", shadow: "" }]);
   assert.ok(Number.isNaN(decodeSwing("#lat=999").latitude));
@@ -124,18 +148,4 @@ test("coordinates", async () => {
   assert.equal(formatCoordinate(-1.3, "lon"), "001°18.00'W");
   assert.equal(formatCoordinate(-36.85, "lat"), "36°51.00'S");
   close(parseCoordinate(formatCoordinate(-122.4194, "lon"), "lon"), -122.4194, 1e-3);
-});
-
-test("shadow edge gaps are checked against the can and scale sizes", async () => {
-  const { shadowEdgeWarning, EDGE_GAPS } = await import("../js/sunswing.js");
-  const gap = (ring, can) => EDGE_GAPS.find((e) => e.ring === ring && e.can === can).gap;
-  close(gap("outer", "standard"), 48.4, 0.1);
-  close(gap("inner", "standard"), 77.2, 0.1);
-  close(gap("outer", "slim"), 42.3, 0.1);
-  close(gap("inner", "slim"), 66.5, 0.1);
-  assert.equal(shadowEdgeWarning("94/142"), null);
-  assert.equal(shadowEdgeWarning("80/157"), null);
-  assert.equal(shadowEdgeWarning("118"), null);
-  assert.match(shadowEdgeWarning("112/124"), /12° apart/);
-  assert.match(shadowEdgeWarning("60/120"), /same scale/);
 });
