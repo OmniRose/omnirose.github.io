@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is compass deviation? · OmniRose</title>
+  <meta name="description" content="Why your boat's compass doesn't quite point north, the difference between variation and deviation, and how to convert between true, magnetic and compass headings.">
+  <link rel="icon" href="../img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/site.css">
+  <meta property="og:title" content="What is compass deviation? · OmniRose">
+  <meta property="og:image" content="https://omnirose.github.io/img/og.png">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../"><img src="../img/icon.svg" alt="">OmniRose</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../make/">Make your table</a>
+        <a href="deviation.html" aria-current="page">What is deviation?</a>
+        <a href="swinging.html">Swinging a compass</a>
+        <a href="using-the-rose.html">Using your rose</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap prose">
+      <h1>What is deviation?</h1>
+      <p class="lede">The short version: your boat's compass is pulled off course by the boat itself, by a different amount depending on which way you're pointing. That error is called <strong>deviation</strong>.</p>
+
+      <h2>Where does a compass actually point?</h2>
+      <p>A compass doesn't point at the North Pole. It lines up with the Earth's magnetic field, which points (roughly) to the <strong>magnetic north pole</strong>, currently wandering about the Arctic north of Canada and drifting towards Siberia.</p>
+      <p>The angle between true north and magnetic north is called <strong>variation</strong> (or "declination" if you're a pilot or a scientist). It depends on where you are in the world and changes slowly over the years. It's printed in the compass rose on your chart, along with how much it changes each year.</p>
+
+      <h2>And then there's your boat</h2>
+      <p>Your compass doesn't live in a vacuum. Right next to it are an engine block, a keel, stainless fittings, speakers, the autopilot, chart plotters, that handheld radio, and the phone in your pocket. All of them bend the magnetic field a little, so the compass ends up pointing at a sort of "boat north" that's a few degrees off magnetic north.</p>
+      <p>That extra error is <strong>deviation</strong>. The tricky bit is that it <em>changes with the boat's heading</em>. Turn the boat and the engine moves to a different side of the compass, pulling it a different way. You might have 3° of deviation heading east and none at all heading south.</p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 420 260" role="img" aria-labelledby="norths-title" style="width:100%;max-width:520px;display:block;margin:0 auto">
+          <title id="norths-title">Three norths: true north straight up, magnetic north a few degrees to one side (variation), and compass north a little further over (deviation).</title>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/>
+            </marker>
+          </defs>
+          <g fill="none" stroke-width="3" stroke-linecap="round">
+            <line x1="210" y1="230" x2="210" y2="40" stroke="#2d7a46" marker-end="url(#arrow)"/>
+            <line x1="210" y1="230" x2="160" y2="45" stroke="#c0392b" marker-end="url(#arrow)"/>
+            <line x1="210" y1="230" x2="126" y2="58" stroke="#3949ab" marker-end="url(#arrow)"/>
+          </g>
+          <path d="M210 120 A110 110 0 0 0 181 124" fill="none" stroke="#888" stroke-width="1.5"/>
+          <path d="M181 124 A110 110 0 0 0 158 131" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <g font-family="system-ui, sans-serif" font-size="14">
+            <text x="218" y="40" fill="#2d7a46" font-weight="700">True north</text>
+            <text x="166" y="30" fill="#c0392b" font-weight="700" text-anchor="end">Magnetic north</text>
+            <text x="20" y="80" fill="#3949ab" font-weight="700">Compass north</text>
+            <text x="222" y="125" fill="currentColor">variation</text>
+            <text x="74" y="150" fill="currentColor">deviation</text>
+          </g>
+        </svg>
+        <figcaption>Variation is the gap between true and magnetic north, and it depends on where you are. Deviation is the gap between magnetic north and where your compass points, and it depends on your boat and its heading.</figcaption>
+      </figure>
+
+      <h2>True, magnetic and compass</h2>
+      <p>So every heading can be written three ways:</p>
+      <ul>
+        <li><strong>True (T)</strong>: relative to true north. Courses you plot on the chart are true.</li>
+        <li><strong>Magnetic (M)</strong>: true, corrected for variation. What a compass would read if your boat were made of wood and wishful thinking.</li>
+        <li><strong>Compass (C)</strong>: magnetic, corrected for your boat's deviation. What your steering compass actually shows.</li>
+      </ul>
+      <p>Easterly variation and deviation are counted as <strong>plus</strong>, westerly as <strong>minus</strong>, and going from compass towards true you add them:</p>
+      <p class="callout"><span class="mnemonic">Compass + deviation = Magnetic. Magnetic + variation = True.</span><br>
+        Sailors remember this as <strong>CADET</strong>: <strong>C</strong>ompass <strong>AD</strong>d <strong>E</strong>ast to get <strong>T</strong>rue. Going the other way you subtract east, or remember "error <em>east</em>, compass <em>least</em>; error <em>west</em>, compass <em>best</em>".</p>
+
+      <h3>A worked example</h3>
+      <p>You've plotted a course of <strong>045°T</strong>. Variation here is <strong>2°W</strong>, and your deviation table says that on this heading your compass has <strong>2.9°W</strong> of deviation.</p>
+      <table class="worked">
+        <tr><th>True</th><td>045°</td><td>from the chart</td></tr>
+        <tr><th>Variation</th><td>2°W</td><td>west is minus, so going away from true we add it back</td></tr>
+        <tr><th>Magnetic</th><td>047°</td><td>45 + 2</td></tr>
+        <tr><th>Deviation</th><td>2.9°W</td><td>from your deviation table, on 047°M</td></tr>
+        <tr><th>Compass</th><td>050°</td><td>47 + 2.9, rounded: steer this</td></tr>
+      </table>
+      <p>That's three opportunities to get a sign wrong when you're tired and wet. A <a href="using-the-rose.html">conversion rose</a> does the whole sum for you: find 45 on the true ring and read across.</p>
+
+      <h2>Do I really need to bother?</h2>
+      <p>If your deviation is under a degree or two everywhere, it's lost in the noise of steering in a seaway, and many sailors happily ignore it. But you won't know that until you've measured it, and it's often bigger than people expect:</p>
+      <ul>
+        <li><strong>Steel and ferro boats</strong> can have deviations of 10° or more.</li>
+        <li><strong>New kit near the compass</strong> (a plotter, speakers, a new engine) can shift things noticeably.</li>
+        <li><strong>Bulkhead and handheld compasses</strong> sit in different spots, so each needs its own table.</li>
+        <li>When the GPS gives up, your compass and your deviation card are what get you home.</li>
+      </ul>
+      <p>A good habit is to check your deviation after any refit or new installation near the compass, and every year or so anyway. If it turns out to be large (more than about 5°), a professional compass adjuster can reduce it with small corrector magnets. Then measure again and make a fresh table for what's left.</p>
+
+      <p class="toolbar">
+        <a class="button primary" href="swinging.html">Next: how to measure it</a>
+        <a class="button" href="../make/">I've got readings already</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="../about.html">About</a></p>
+      <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
+    </div>
+  </footer>
+</body>
+</html>

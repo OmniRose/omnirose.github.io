@@ -3,10 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OmniRose</title>
+  <title>OmniRose · Free deviation tables and conversion roses</title>
+  <meta name="description" content="Your boat's compass is a little bit wrong. OmniRose turns your deviation readings into a printable deviation table and conversion rose. Free, private, no sign-up.">
+  <link rel="icon" href="img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/site.css">
+  <meta property="og:title" content="OmniRose · Free deviation tables and conversion roses">
+  <meta property="og:description" content="Your boat's compass is a little bit wrong. Make a printable deviation table and conversion rose for it, free.">
+  <meta property="og:image" content="https://omnirose.github.io/img/og.png">
+  <meta property="og:url" content="https://omnirose.github.io/">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-  <h1>OmniRose</h1>
-  <p>Free deviation tables and conversion roses for your boat's compass. Coming soon.</p>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="img/icon.svg" alt="">OmniRose</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="make/">Make your table</a>
+        <a href="learn/deviation.html">What is deviation?</a>
+        <a href="learn/swinging.html">Swinging a compass</a>
+        <a href="learn/using-the-rose.html">Using your rose</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <div>
+          <h1>Your compass is fibbing. Just a little.</h1>
+          <p class="lede">The engine, the electronics, even the tins of beans in the locker all tug at your boat's compass. OmniRose turns a few simple readings into a clear deviation table and a conversion rose, so you know exactly which way you're really heading.</p>
+          <p class="toolbar">
+            <a class="button primary" href="make/">Make your deviation table</a>
+            <a class="button" href="learn/deviation.html">Wait, what's deviation?</a>
+          </p>
+          <p class="hint">Free and open source. No sign-up, no adverts, and your readings never leave your browser.</p>
+        </div>
+        <div>
+          <img src="img/example-rose.svg" alt="An example conversion rose: three coloured rings of degree marks for magnetic, true and compass bearings, with 2°W variation in the middle." width="590" height="790">
+        </div>
+      </section>
+
+      <h2>How it works</h2>
+      <div class="features">
+        <div class="card">
+          <h3><span class="step">1</span>Swing your compass</h3>
+          <p>Point the boat at a few known headings and note how far the compass is off each time. It takes about an hour on a calm day. <a href="learn/swinging.html">Here's how.</a></p>
+        </div>
+        <div class="card">
+          <h3><span class="step">2</span>Type in your readings</h3>
+          <p>OmniRose fits a smooth curve through them and shows you the result straight away, with a nudge if a reading looks odd.</p>
+        </div>
+        <div class="card">
+          <h3><span class="step">3</span>Print, laminate, done</h3>
+          <p>Download your deviation table and conversion roses as PDFs. Each one has a QR code that brings your readings back whenever you need a reprint.</p>
+        </div>
+      </div>
+
+      <h2>What you get</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>A deviation table</h3>
+          <p>The classic card for the chart table: your compass's error on every heading, drawn as a curve so you can read it at a glance. There's also a <strong>combined table</strong> with compass headings on the other side, which saves you a second round of correction.</p>
+          <img src="img/example-table.svg" alt="An example deviation table: a vertical grid with headings from 0° to 360° down the side, deviation across the top, and a smooth curve through red reading dots." width="590" height="790" loading="lazy" style="display:block;max-width:300px;margin:12px auto 0;border:1px solid var(--line);border-radius:8px">
+        </div>
+        <div class="card">
+          <h3>A conversion rose</h3>
+          <p>Three rings, one each for true, magnetic and compass, lined up so you can convert any heading just by reading straight across. No sums, no "add east or was it west?" at 3am. <a href="learn/using-the-rose.html">See how to use it.</a></p>
+          <div class="callout">
+            <p class="mnemonic" style="margin:0">Want to steer 045° true?</p>
+            <p style="margin:0.3em 0 0">Find 45 on the green ring and read across: that's 047° magnetic and 050° on <em>Saucy Sue's</em> compass. Done.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout warm">
+        <p style="margin:0"><strong>New to all this?</strong> Start with <a href="learn/deviation.html">what deviation is and why it matters</a>. It's less scary than it sounds, promise.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="about.html">About</a></p>
+      <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
+    </div>
+  </footer>
 </body>
 </html>

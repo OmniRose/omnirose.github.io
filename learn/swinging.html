@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swinging a compass · OmniRose</title>
+  <meta name="description" content="How to measure your boat's compass deviation: transits, known bearings, a hand-bearing compass, GPS and the sun. With a printable recording sheet.">
+  <link rel="icon" href="../img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/site.css">
+  <meta property="og:title" content="Swinging a compass · OmniRose">
+  <meta property="og:image" content="https://omnirose.github.io/img/og.png">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../"><img src="../img/icon.svg" alt="">OmniRose</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../make/">Make your table</a>
+        <a href="deviation.html">What is deviation?</a>
+        <a href="swinging.html" aria-current="page">Swinging a compass</a>
+        <a href="using-the-rose.html">Using your rose</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap prose">
+      <h1>Swinging a compass</h1>
+      <p class="lede">"Swinging the compass" just means turning the boat through a full circle, stopping on several headings, and noting how far the compass is off on each. It sounds grand; it's mostly a pleasant hour of motoring in circles.</p>
+
+      <ul class="toc" aria-label="On this page">
+        <li><a href="#idea">The idea</a></li>
+        <li><a href="#before">Before you start</a></li>
+        <li><a href="#methods">Ways to do it</a></li>
+        <li><a href="#sheet">Recording sheet</a></li>
+        <li><a href="#after">Afterwards</a></li>
+      </ul>
+
+      <h2 id="idea">The idea</h2>
+      <p>For each reading you need two numbers at the same moment:</p>
+      <ol>
+        <li>the boat's <strong>actual magnetic heading</strong>, found from something you trust, and</li>
+        <li>what the <strong>compass says</strong>.</li>
+      </ol>
+      <p>The difference is the deviation on that heading:</p>
+      <p class="callout"><span class="mnemonic">Deviation = magnetic heading − compass reading</span><br>
+        A positive answer is <strong>East</strong>, a negative one is <strong>West</strong>. If the compass reads <em>less</em> than the real magnetic heading the deviation is East ("error east, compass least").</p>
+      <p>Aim for a reading at least every 45° all the way round (8 readings). Every 30° (12) or every 22.5° (16) is better, especially on a steel boat. The readings don't need to be on exact round numbers: OmniRose is happy with whatever headings you actually got.</p>
+
+      <h2 id="before">Before you start</h2>
+      <ul>
+        <li><strong>Make the boat "sea-ready"</strong>: everything stowed where it lives when sailing, the engine running if you usually motor, and the electronics, autopilot and lights on as normal.</li>
+        <li><strong>Keep phones, radios, tools and tins well away</strong> from the compass. Yes, that includes the crew's pockets.</li>
+        <li><strong>Pick a calm day and open water</strong>, away from steel piers, moored ships and other boats.</li>
+        <li><strong>Steady each heading</strong> for 20 or 30 seconds before reading. Compasses lag a little as you turn.</li>
+        <li><strong>Bring a helper</strong> if you can: one to steer, one to sight and scribble.</li>
+      </ul>
+
+      <h2 id="methods">Ways to do it</h2>
+
+      <h3>1. Transits: the classic</h3>
+      <p>A transit is two charted objects that line up, such as a pair of leading lights, a beacon and a church spire, or two headlands. The chart gives you the true bearing of the line between them.</p>
+      <p>Steer straight along the transit, with the two objects lined up dead ahead: your heading is then exactly the transit's bearing. Turn round and run back along it for the reciprocal. That's two readings from one transit, so a few different transits will get you round the circle. For headings in between, use a pelorus (below) to measure the angle between the transit and your bow as you cross it.</p>
+      <p>Convert the true bearing to magnetic using the variation on your chart, and you have your reference.</p>
+
+      <h3>2. A distant landmark and a pelorus</h3>
+      <p>A <strong>pelorus</strong> is a compass card with no magnet: a dumb rose you line up with the boat's centreline, with a sight on top. From a known position (a charted mooring, or anchored somewhere you can fix accurately), work out the magnetic bearing to a distant landmark. Then, on each heading, sight the landmark over the pelorus to get its relative bearing. The boat's magnetic heading is the landmark's magnetic bearing minus its relative bearing.</p>
+      <p>The further away the landmark, the less it matters if you drift a little. A few miles is ideal.</p>
+
+      <h3>3. A hand-bearing compass from the "clean" end of the boat</h3>
+      <p>A hand-bearing compass held well away from the engine and electronics (say on the bow, or on a dinghy alongside) has little or no deviation of its own. Sight straight down the boat's centreline with it to get the boat's magnetic heading, and compare it with the steering compass. It's quick and needs no landmarks, but it's only as good as your aim: take a few sightings per heading and average them.</p>
+
+      <h3>4. GPS: handy but fussy</h3>
+      <p>A GPS gives course over ground, not heading. In flat calm water with no tide or wind, motoring steadily in a straight line, the two are nearly the same. You can then compare GPS course (converted to magnetic) with the compass. Any current or leeway sneaks straight into your readings, though, so use this as a sanity check rather than your main method. Satellite compasses that use two antennas give true heading directly and are excellent if you have one.</p>
+
+      <h3>5. The sun</h3>
+      <p>The sun's direction (its azimuth) at any moment and place can be calculated exactly. A shadow pin on a pelorus tells you the angle between the sun and your bow, so the sun becomes a reference that's visible from anywhere on a clear day. An early version of OmniRose experimented with a "solar pelorus" made from a printout and a drinks can, plus a tool that reads the shadow and the compass from two phone videos. It's on the list to bring back; <a href="../about.html#roadmap">see the roadmap</a>.</p>
+
+      <h2 id="sheet">Recording sheet</h2>
+      <p>Print this page (the menus vanish when printed) or copy the table into a notebook. Fill in the first two columns on the water, and work out the deviation afterwards.</p>
+      <table class="worked" style="width:100%">
+        <thead>
+          <tr><th>Magnetic heading<br><span class="hint">from your reference</span></th><th>Compass reading</th><th>Deviation<br><span class="hint">magnetic − compass</span></th><th>E / W</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>e.g. 045°</td><td>048°</td><td>−3°</td><td>W</td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+      <div class="callout warm">
+        <p style="margin:0"><strong>Wrote down compass headings instead?</strong> That's fine. OmniRose wants the <em>magnetic</em> heading, which is the compass reading plus the deviation (add East, subtract West). In the example above, 048°C with 3°W deviation is 045°M.</p>
+      </div>
+
+      <h2 id="after">Afterwards</h2>
+      <ul>
+        <li><strong>Type your readings into OmniRose</strong> and look at the curve. A real deviation curve is smooth, usually one or two gentle waves around the circle. If one reading sits well off the curve, OmniRose will point it out; it's probably a misread or a gust.</li>
+        <li><strong>Large deviations</strong> (more than about 5°) are worth having a professional compass adjuster reduce. Then swing again and make a fresh table.</li>
+        <li><strong>Swing again</strong> after a refit or new electronics near the compass, and every year or so to be sure nothing has crept in.</li>
+      </ul>
+
+      <p class="toolbar">
+        <a class="button primary" href="../make/">Enter your readings</a>
+        <a class="button" href="using-the-rose.html">Next: using your table and rose</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="../about.html">About</a></p>
+      <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Using your deviation table and conversion rose · OmniRose</title>
+  <meta name="description" content="How to read a deviation table, what the combined table is for, and how to convert between true, magnetic and compass headings with a conversion rose.">
+  <link rel="icon" href="../img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/site.css">
+  <meta property="og:title" content="Using your deviation table and conversion rose · OmniRose">
+  <meta property="og:image" content="https://omnirose.github.io/img/og.png">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../"><img src="../img/icon.svg" alt="">OmniRose</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../make/">Make your table</a>
+        <a href="deviation.html">What is deviation?</a>
+        <a href="swinging.html">Swinging a compass</a>
+        <a href="using-the-rose.html" aria-current="page">Using your rose</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap prose">
+      <h1>Using your table and rose</h1>
+      <p class="lede">You've got a fresh printout. Here's how to get the most out of it, using <em>Saucy Sue</em>, one of the example boats, in waters with 2°W of variation.</p>
+
+      <ul class="toc" aria-label="On this page">
+        <li><a href="#table">The deviation table</a></li>
+        <li><a href="#combined">The combined table</a></li>
+        <li><a href="#rose">The conversion rose</a></li>
+        <li><a href="#bearings">Taking bearings</a></li>
+        <li><a href="#care">Looking after it</a></li>
+      </ul>
+
+      <h2 id="table">The deviation table</h2>
+      <p>Headings run down the page from 000° at the top to 360° at the bottom, and deviation runs across, West on the left and East on the right. The red dots are your readings and the black line is the smooth curve OmniRose fitted through them.</p>
+      <p>To find the deviation on a heading, find the heading on the left and follow its line in until it meets the curve. Then look straight up (or down) to read the deviation. Lines that stop short of the centre are westerly, lines that cross it are easterly.</p>
+      <p>The left side is <strong>magnetic</strong> heading, so the table answers "I want to steer 047°M; what does the compass say?" directly. Going the other way ("the compass says 090°; what's that magnetic?") is slightly circular, because the deviation depends on the magnetic heading you haven't worked out yet. Look up the deviation at the compass heading, apply it, then look again at the result and correct once more. That's the "second round of correction" mentioned on the card. Or use the combined table.</p>
+
+      <h2 id="combined">The combined table</h2>
+      <p>The combined table is the same curve with <strong>compass</strong> headings down the right-hand side instead. Each compass line is drawn at the magnetic heading it really corresponds to, so it meets the curve in the right place. Use the left side when you start from magnetic and the right side when you start from the compass, and there's no second round to do.</p>
+
+      <h2 id="rose">The conversion rose</h2>
+      <figure class="figure">
+        <img src="../img/example-rose.svg" alt="Conversion rose for Saucy Sue at 2°W variation." width="590" height="790" loading="lazy" style="max-width:420px;display:block;margin:0 auto">
+        <figcaption><em>Saucy Sue's</em> rose for 2°W. Red outer ring: magnetic. Green middle ring: true. Blue inner ring: compass.</figcaption>
+      </figure>
+      <p>Each page is drawn for one value of variation, shown big in the middle. The three rings are lined up so that the <strong>same direction</strong> sits at the <strong>same angle</strong> on all three. The superscript on each number (<sup>M</sup>, <sup>T</sup> or <sup>C</sup>) tells you which ring you're on.</p>
+      <p>Notice the blue compass ring isn't evenly spaced: it's stretched in some places and squashed in others. That's your deviation curve, built in.</p>
+
+      <h3>From the chart to the helm</h3>
+      <p>You've plotted a course of <strong>045°T</strong>. Find 45 on the green ring and read straight out to the red ring and in to the blue ring:</p>
+      <table class="worked">
+        <tr><th>True</th><td>045°</td></tr>
+        <tr><th>Magnetic</th><td>047°</td></tr>
+        <tr><th>Compass</th><td>050°: tell the helm to steer this</td></tr>
+      </table>
+
+      <h3>From the helm to the chart</h3>
+      <p>The helm reports you've been steering <strong>090° by the compass</strong>. Find 90 on the blue ring and read outwards: that's <strong>085°M</strong> and <strong>083°T</strong>, which is what you lay off on the chart for your dead reckoning.</p>
+
+      <p class="callout">Pick the page that matches the variation where you're sailing. If you're crossing an area where variation changes, print the range you need: OmniRose can print up to 10 pages at once, one per degree.</p>
+
+      <h2 id="bearings">Taking bearings</h2>
+      <p>Deviation depends on the <strong>boat's heading</strong>, not on the direction you're looking. So the blue compass ring is for <em>headings</em> from the compass it was made for.</p>
+      <ul>
+        <li><strong>Bearings with a hand-bearing compass</strong>, taken away from the boat's iron, are magnetic. Use just the red and green rings to convert them to true.</li>
+        <li><strong>Bearings with the steering compass</strong> (sighting across it) are affected by the deviation for the heading the boat is on <em>at the time</em>. Look that up on the table and apply it to the bearing, then convert to true.</li>
+      </ul>
+
+      <h2 id="care">Looking after it</h2>
+      <ul>
+        <li><strong>Print at actual size</strong> (100%, not "fit to page") so the rings stay round and true.</li>
+        <li><strong>Laminate it</strong> or slip it into a clear pocket, and keep it next to the compass or at the chart table.</li>
+        <li><strong>Each compass needs its own table.</strong> The steering compass and a bulkhead compass sit in different places and see different deviations.</li>
+        <li><strong>Keep your link</strong>, or just scan the QR code on the printout, to make a fresh copy or a rose for a new cruising area.</li>
+        <li><strong>Variation creeps</strong> by a fraction of a degree each year. Check your chart (or a current magnetic model) every few seasons and print a new rose if it has moved a whole degree.</li>
+        <li><strong>Re-swing</strong> after changes near the compass, or if you start to suspect it.</li>
+      </ul>
+
+      <p class="toolbar">
+        <a class="button primary" href="../make/">Make your own</a>
+        <a class="button" href="../make/#v=Saucy%20Sue&amp;n=Bulkhead%20compass%20by%20the%20chart%20table&amp;r=0:3,30:-1,60:-4,90:-5.5,120:-4,150:-3,180:-2,210:-0.5,240:0.5,270:3,300:4.5,330:5&amp;var=-2,-2">Open Saucy Sue's readings</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="../about.html">About</a></p>
+      <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About · OmniRose</title>
+  <meta name="description" content="About OmniRose: a free, open source tool for compass deviation tables and conversion roses. How it works, privacy, and how to help.">
+  <link rel="icon" href="img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/site.css">
+  <meta property="og:title" content="About · OmniRose">
+  <meta property="og:image" content="https://omnirose.github.io/img/og.png">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="img/icon.svg" alt="">OmniRose</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="make/">Make your table</a>
+        <a href="learn/deviation.html">What is deviation?</a>
+        <a href="learn/swinging.html">Swinging a compass</a>
+        <a href="learn/using-the-rose.html">Using your rose</a>
+        <a href="about.html" aria-current="page">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap prose">
+      <h1>About OmniRose</h1>
+      <p class="lede">OmniRose started in 2015 as a small paid service for sailors who wanted a tidy deviation card and a conversion rose for their boat. It's now free and open source, for anyone who finds it useful.</p>
+
+      <h2>Your data stays with you</h2>
+      <ul>
+        <li>Everything happens in your browser. Your readings are never sent to a server.</li>
+        <li>Your readings live in the page's link, after the "#", which browsers don't send to the website. That's why bookmarking the page saves your table.</li>
+        <li>No accounts, no cookies, no analytics, no adverts.</li>
+      </ul>
+
+      <h2>How it works</h2>
+      <p>For the curious: compass deviation follows a well-known pattern. On a heading θ it can be written as</p>
+      <p class="callout" style="font-family:ui-monospace,Menlo,Consolas,monospace">deviation = A + B·sin θ + C·cos θ + D·sin 2θ + E·cos 2θ + …</p>
+      <p>The five coefficients A to E are the ones compass adjusters have used for over a century. Roughly: A is a constant offset (often a misaligned lubber line), B and C come from permanent magnetism in the boat, and D and E from soft iron.</p>
+      <p>OmniRose fits this series to your readings by least squares. It picks how many terms to use with the Bayesian information criterion, a standard way to choose the simplest curve that explains the data, up to seven terms (one harmonic beyond A to E). You can override it under "Advanced" on the tool page. Then it draws the table and the rose straight to PDF in your browser, using the built-in Helvetica font so nothing needs downloading.</p>
+      <p>Each printout carries a QR code holding a link to your readings, so a laminated card can always find its way back to the tool.</p>
+
+      <h2 id="roadmap">What's next</h2>
+      <ul>
+        <li><strong>"Where are you sailing?"</strong>: pick your cruising area and OmniRose works out which variation pages to print, using the World Magnetic Model.</li>
+        <li><strong>Swing by the sun</strong>: bring back the solar pelorus from the original project, a printable shadow card plus a tool for reading compass and shadow from two phone videos.</li>
+      </ul>
+
+      <h2>Help make it better</h2>
+      <p>The code is on <a href="https://github.com/OmniRose/omnirose.github.io">GitHub</a> under the MIT licence. Bug reports, ideas and fixes are all welcome:</p>
+      <ul>
+        <li>Something looks wrong on your table? <a href="https://github.com/OmniRose/omnirose.github.io/issues/new/choose">Open an issue</a> and include the link from the "Keep it" box, so we can see exactly what you see.</li>
+        <li>The site is plain HTML and JavaScript with no build step. Clone it, run a local web server, and open it in your browser. The README has the details.</li>
+      </ul>
+
+      <h2>The small print</h2>
+      <p>OmniRose is a navigation aid, provided as-is and without warranty. It's only as good as the readings you give it. Always cross-check your position by other means, and keep a good lookout.</p>
+      <p>The original OmniRose website (2015–2016) was written in Python and Django; its code is preserved in the repository's history.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="about.html">About</a></p>
+      <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
+    </div>
+  </footer>
+</body>
+</html>
