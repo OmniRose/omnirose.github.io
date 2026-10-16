@@ -7,10 +7,12 @@ import { drawRose, drawRoses } from "./draw/rose.js";
 import { PdfSurface, SvgSurface } from "./draw/surface.js";
 import { drawTable, tableTitle } from "./draw/table.js";
 import { examples } from "./examples.js";
+import { remember, restore } from "./remember.js";
 import { decodeState, encodeState } from "./state.js";
 import { setupWhere } from "./where.js";
 
 const MAX_ROSE_PAGES = 10;
+const STORAGE_KEY = "omnirose:make";
 // With no variation chosen yet, preview the rose at this much, so the
 // magnetic and true rings visibly differ and show what the rose is for.
 const PREVIEW_VARIATION = -5;
@@ -145,6 +147,7 @@ function update() {
   const state = currentState();
   const hash = encodeState(state);
   if (location.hash !== hash) history.replaceState(null, "", hash || location.pathname);
+  remember(STORAGE_KEY, hash);
   els.shareUrl.value = shareUrl();
 
   // Only complete rows count; half-typed rows are left alone.
@@ -460,6 +463,7 @@ function load() {
 }
 
 wire();
+restore(STORAGE_KEY, $("#restored"));
 load();
 setupWhere({
   container: $("#where"),

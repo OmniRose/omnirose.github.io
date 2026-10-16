@@ -4,6 +4,7 @@ import { eastWest, formatNumber } from "./curve.js";
 import { PAGE_HEIGHT, PAGE_WIDTH } from "./draw/common.js";
 import { drawPelorus } from "./draw/pelorus.js";
 import { PdfSurface, SvgSurface } from "./draw/surface.js";
+import { remember, restore } from "./remember.js";
 import { encodeState } from "./state.js";
 import {
   decodeSwing,
@@ -17,6 +18,8 @@ import {
   toUtc,
 } from "./sunswing.js";
 import { MagneticModel, decimalYear } from "./wmm.js";
+
+const STORAGE_KEY = "omnirose:sun";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -239,6 +242,7 @@ function update() {
     state.observations.some((o) => o.time || o.compass || o.shadow);
   const hash = started ? encodeSwing(state) : "";
   if (location.hash !== hash) history.replaceState(null, "", hash || location.pathname);
+  remember(STORAGE_KEY, hash);
 
   const latitude = parseCoordinate(els.lat.value, "lat");
   const longitude = parseCoordinate(els.lon.value, "lon");
@@ -463,5 +467,6 @@ async function loadModel() {
 
 showPelorus();
 wire();
+restore(STORAGE_KEY, $("#restored"));
 load();
 loadModel();
