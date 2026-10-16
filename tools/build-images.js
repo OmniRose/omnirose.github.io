@@ -23,7 +23,7 @@ writeFileSync(new URL("../img/example-table.svg", import.meta.url), table.toSvg(
 
 const rose = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
 drawRose(rose, curve, -2, details);
-writeFileSync(new URL("../img/example-rose.svg", import.meta.url), rose.toSvg(0, { title: "Example conversion rose" }));
+writeFileSync(new URL("../img/example-rose.svg", import.meta.url), rose.toSvg(0, { title: "Example OmniRose" }));
 
 const pelorus = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
 drawPelorus(pelorus);

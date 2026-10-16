@@ -282,7 +282,7 @@ function renderPreview(state) {
     const unset = from === 0 && to === 0;
     const variation = unset ? PREVIEW_VARIATION : Math.min(from, to);
     drawRose(surface, curve, variation, details);
-    title = `Conversion rose for ${eastWest(variation)} variation`;
+    title = `OmniRose for ${eastWest(variation)} variation`;
     els.previewNote.hidden = !unset;
   } else {
     drawTable(surface, curve, { right: view, ...details });
@@ -329,8 +329,8 @@ function download(kind) {
     const [from, to] = variationRange();
     drawRoses(pdf, curve, { from, to, ...details });
     const range = from === to ? eastWest(from) : `${eastWest(Math.min(from, to))} to ${eastWest(Math.max(from, to))}`;
-    title = `Conversion roses${state.vessel ? ` for ${state.vessel}` : ""}, ${range}`;
-    filename = `${slug(state.vessel)}-conversion-roses.pdf`;
+    title = `OmniRoses${state.vessel ? ` for ${state.vessel}` : ""}, ${range}`;
+    filename = state.vessel ? `${slug(state.vessel)}-omniroses.pdf` : "omniroses.pdf";
   } else if (kind === "record") {
     drawRecord(pdf, { curve, ...details });
     title = `Compass swing record${state.vessel ? ` for ${state.vessel}` : ""}`;

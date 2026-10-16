@@ -311,7 +311,7 @@ function emailHref(state, rows, variation, offset) {
   if (Number.isFinite(offset)) lines.push(`Shadow edge with the sun dead ahead: ${formatNumber(360 - offset)}`);
   if (rows.length) lines.push("", ...rows);
   lines.push("", "Carry on with this swing here:", location.href);
-  if (els.toTable.getAttribute("aria-disabled") !== "true") lines.push("", "Make the conversion rose from it here:", els.toTable.href);
+  if (els.toTable.getAttribute("aria-disabled") !== "true") lines.push("", "Make the OmniRose from it here:", els.toTable.href);
   return mailto(`OmniRose sun swing${state.vessel ? ` for ${state.vessel}` : ""}`, lines);
 }
 

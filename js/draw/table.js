@@ -146,7 +146,7 @@ export function drawTable(surface, curve, { right = "magnetic", vessel = "", not
     ...BLURBS[right],
     "",
     "For direct conversion between true, magnetic and compass bearings,",
-    `make a conversion rose at ${SITE}`,
+    `make an OmniRose at ${SITE}`,
   ]) {
     y = line ? drawTextBlock(surface, line, 8, y) : y + 8;
   }

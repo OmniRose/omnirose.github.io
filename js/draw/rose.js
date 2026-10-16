@@ -1,4 +1,4 @@
-// The conversion rose (port of outputs/rose.py).
+// The OmniRose, our conversion rose (port of outputs/rose.py).
 //
 // Three rings, one inside the other:
 //

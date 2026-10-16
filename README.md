@@ -8,7 +8,7 @@ Enter the deviation readings from a compass swing and OmniRose fits a smooth cur
 
 - a **deviation table** (headings against deviation, the classic chart-table card),
 - a **combined table** (with compass headings on the other side, so no second round of correction), and
-- **conversion roses** (true, magnetic and compass rings lined up for a given variation, so converting is just reading across).
+- **OmniRoses**, our conversion roses (true, magnetic and compass rings lined up for a given variation, so converting is just reading across).
 
 Everything runs in the browser. Readings are kept in the page's URL hash, so a bookmark *is* the saved table, and every printout has a QR code that links back to it. There are no accounts, cookies, analytics or servers.
 
