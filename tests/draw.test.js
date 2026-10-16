@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { Curve } from "../js/curve.js";
 import { PAGE_HEIGHT, PAGE_WIDTH, splitIntoLines } from "../js/draw/common.js";
 import { displayable, textWidth, toWinAnsi } from "../js/draw/font.js";
+import { drawRecord, headingsEvery } from "../js/draw/record.js";
 import { drawRoses } from "../js/draw/rose.js";
 import { PdfSurface, SvgSurface } from "../js/draw/surface.js";
 import { drawTable } from "../js/draw/table.js";
@@ -56,6 +57,29 @@ test("roses render one page per degree of variation", () => {
   drawRoses(pdf, curve, { from: 2, to: -3, vessel: "Test", url });
   assertWellFormedPdf(pdf.toString(), 6);
   assert.ok(!/NaN|undefined|Infinity/.test(pdf.toString()));
+});
+
+test("swing records render filled for every sample and blank for each step", () => {
+  for (const [name, sample] of usable) {
+    const pdf = new PdfSurface(PAGE_WIDTH, PAGE_HEIGHT);
+    drawRecord(pdf, { curve: new Curve(sample.readings), vessel: sample.vessel, note: sample.note, url });
+    assertWellFormedPdf(pdf.toString(), 1);
+    assert.ok(!/NaN|undefined|Infinity/.test(pdf.toString()), `${name} record has no bad numbers`);
+  }
+  for (const step of [45, 30, 22.5]) {
+    const svg = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
+    drawRecord(svg, { headings: headingsEvery(step) });
+    const markup = svg.toSvg();
+    assert.ok(!/NaN|undefined|Infinity/.test(markup));
+    assert.ok(markup.includes(step === 22.5 ? "337.5°M" : "000°M"));
+  }
+});
+
+test("the swing record flags readings well off the curve", () => {
+  const readings = [[0, 1], [45, 2], [90, 3], [135, 2], [180, 1], [225, -1], [270, -6], [315, -1]];
+  const svg = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
+  drawRecord(svg, { curve: new Curve(readings, { terms: 3 }) });
+  assert.ok(svg.toSvg().includes("check"));
 });
 
 test("the QR code is clickable in the PDF", () => {

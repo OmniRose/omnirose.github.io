@@ -2,6 +2,7 @@
 
 import { Curve, CurveError, availableTerms, chooseTerms, eastWest, formatNumber, validateReadings } from "./curve.js";
 import { PAGE_HEIGHT, PAGE_WIDTH } from "./draw/common.js";
+import { drawRecord, headingsEvery } from "./draw/record.js";
 import { drawRose, drawRoses } from "./draw/rose.js";
 import { PdfSurface, SvgSurface } from "./draw/surface.js";
 import { drawTable, tableTitle } from "./draw/table.js";
@@ -299,13 +300,32 @@ function download(kind) {
     const range = from === to ? eastWest(from) : `${eastWest(Math.min(from, to))} to ${eastWest(Math.max(from, to))}`;
     title = `Conversion roses${state.vessel ? ` for ${state.vessel}` : ""}, ${range}`;
     filename = `${slug(state.vessel)}-conversion-roses.pdf`;
+  } else if (kind === "record") {
+    drawRecord(pdf, { curve, ...details });
+    title = `Compass swing record${state.vessel ? ` for ${state.vessel}` : ""}`;
+    filename = `${slug(state.vessel)}-swing-record.pdf`;
   } else {
     drawTable(pdf, curve, { right: kind, ...details });
     title = tableTitle(kind, state.vessel);
     filename = `${slug(state.vessel)}-${kind === "compass" ? "combined" : "deviation"}-table.pdf`;
   }
   pdf.title = title;
+  savePdf(pdf, filename);
+}
 
+// A sheet to take out on the swing: the headings listed in the readings
+// table (every 30° if there are none), with the boat's name if it's known.
+function downloadBlankRecord() {
+  const state = currentState();
+  const listed = readRows().map(([h]) => h).filter((h) => Number.isFinite(h) && h >= 0 && h < 360);
+  const headings = listed.length ? [...new Set(listed)].sort((a, b) => a - b) : headingsEvery(30);
+  const pdf = new PdfSurface(PAGE_WIDTH, PAGE_HEIGHT, { author: "OmniRose" });
+  drawRecord(pdf, { headings, vessel: state.vessel, note: state.note });
+  pdf.title = `Blank compass swing record${state.vessel ? ` for ${state.vessel}` : ""}`;
+  savePdf(pdf, `${slug(state.vessel)}-blank-swing-record.pdf`);
+}
+
+function savePdf(pdf, filename) {
   const blob = new Blob([pdf.toBytes()], { type: "application/pdf" });
   const href = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -404,6 +424,7 @@ function wire() {
   );
 
   $$("[data-download]").forEach((button) => button.addEventListener("click", () => download(button.dataset.download)));
+  $("#blank-record").addEventListener("click", downloadBlankRecord);
 
   els.copyLink.addEventListener("click", async () => {
     try {

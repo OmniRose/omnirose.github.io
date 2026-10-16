@@ -538,6 +538,10 @@ label {
   margin-top: 0;
 }
 
+.downloads + .download-group {
+  margin-top: 16px;
+}
+
 .range {
   display: flex;
   flex-wrap: wrap;
@@ -806,3 +810,4 @@ details.advanced summary {
     padding: 7px 4px;
   }
 }
+

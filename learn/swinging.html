@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Swinging a compass · OmniRose</title>
   <meta name="description" content="How to measure your boat's compass deviation: transits, known bearings, a hand-bearing compass, GPS and the sun. With a printable recording sheet.">
+  <script type="module" src="../js/record-page.js"></script>
   <link rel="icon" href="../img/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../css/site.css">
   <meta property="og:title" content="Swinging a compass · OmniRose">
@@ -80,29 +81,15 @@
       <p><a class="button primary" href="../sun/">Swing by the sun</a></p>
 
       <h2 id="sheet">Recording sheet</h2>
-      <p>Print this page (the menus vanish when printed) or copy the table into a notebook. Fill in the first two columns on the water, and work out the deviation afterwards.</p>
-      <table class="worked" style="width:100%">
-        <thead>
-          <tr><th>Magnetic heading<br><span class="hint">from your reference</span></th><th>Compass reading</th><th>Deviation<br><span class="hint">magnetic − compass</span></th><th>E / W</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>e.g. 045°</td><td>048°</td><td>−3°</td><td>W</td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-          <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-        </tbody>
-      </table>
+      <p>Take a recording sheet out with you. It has a row for each magnetic heading to steer, with space for the compass reading, the deviation and a note. Fill in the compass column on the water, and work out the deviation afterwards: magnetic minus compass, East if the compass reads less and West if it reads more.</p>
+      <p class="toolbar" id="blank-sheets">
+        <button type="button" class="primary" data-step="45">Every 45° (PDF)</button>
+        <button type="button" data-step="30">Every 30° (PDF)</button>
+        <button type="button" data-step="22.5">Every 22.5° (PDF)</button>
+      </p>
+      <p class="hint">Want your boat's name on it? Type it on the <a href="../make/">make page</a> and use "Blank sheet" there instead.</p>
       <div class="callout warm">
-        <p style="margin:0"><strong>Wrote down compass headings instead?</strong> That's fine. OmniRose wants the <em>magnetic</em> heading, which is the compass reading plus the deviation (add East, subtract West). In the example above, 048°C with 3°W deviation is 045°M.</p>
+        <p style="margin:0"><strong>Wrote down compass headings instead?</strong> That's fine. OmniRose wants the <em>magnetic</em> heading, which is the compass reading plus the deviation (add East, subtract West). For example, 048°C with 3°W deviation is 045°M.</p>
       </div>
 
       <h2 id="after">Afterwards</h2>
