@@ -4,11 +4,13 @@ import assert from "node:assert/strict";
 import { Curve, mod360 } from "../js/curve.js";
 import { examples } from "../js/examples.js";
 import { sunPosition } from "../js/sun.js";
-import { INNER, MM_TO_POINTS, OUTER } from "../js/draw/pelorus.js";
+import { MM_TO_POINTS, OUTER } from "../js/draw/pelorus.js";
 import {
   angleDifference,
   decodeSwing,
+  DEFAULT_EDGE,
   edgeOffset,
+  offsetFromEdge,
   encodeSwing,
   parseShadow,
   parseTime,
@@ -35,24 +37,24 @@ function anticlockwiseEdgeReading(sunRelative, diameterMm, ringRadius) {
 
 test("a simulated swing gives back the boat's deviations", () => {
   // Saucy Sue in the Solent on a summer morning, with 1°E variation, turning
-  // through 12 headings two minutes apart, read on both scales with two cans.
+  // through 12 headings two minutes apart, read with three cans.
   const boat = new Curve(examples[2].readings);
   const latitude = 50.78;
   const longitude = -1.3;
   const variation = 1;
   const start = toUtc("2026-07-14", "08:30:00", 60);
 
-  for (const [diameter, scale, ring] of [[66, "outer", OUTER], [58, "inner", INNER], [73, "outer", OUTER]]) {
+  for (const diameter of [66, 58, 73]) {
     for (let i = 0; i < 12; i++) {
       const date = new Date(start.getTime() + i * 120000);
       const trueHeading = i * 30 + 7;
       const magnetic = mod360(trueHeading - variation);
       const compass = boat.magneticToCompass(magnetic);
       const { azimuth } = sunPosition(date, latitude, longitude);
-      const shadow = anticlockwiseEdgeReading(mod360(azimuth - trueHeading), diameter, ring);
+      const shadow = anticlockwiseEdgeReading(mod360(azimuth - trueHeading), diameter, OUTER);
 
       const result = reduceObservation({
-        date, latitude, longitude, compass, shadow, variation, offset: edgeOffset(diameter, scale),
+        date, latitude, longitude, compass, shadow, variation, offset: edgeOffset(diameter),
       });
       close(result.trueHeading, trueHeading, 1e-9, "true heading");
       close(result.magneticHeading, magnetic, 1e-9, "magnetic heading");
@@ -63,10 +65,13 @@ test("a simulated swing gives back the boat's deviations", () => {
 });
 
 test("edge offsets for the usual cans", () => {
-  close(edgeOffset(66, "outer"), 24.2, 0.05);
-  close(edgeOffset(66, "inner"), 38.6, 0.05);
-  close(edgeOffset(58, "outer"), 21.1, 0.05);
-  close(edgeOffset(58, "inner"), 33.2, 0.05);
+  close(edgeOffset(66), 24.2, 0.05);
+  close(edgeOffset(58), 21.1, 0.05);
+  // The dead-ahead edge reading is where each can's snail line meets the scale.
+  assert.equal(offsetFromEdge(DEFAULT_EDGE), 24);
+  assert.ok(Number.isNaN(offsetFromEdge(24)), "an offset typed in by mistake is rejected");
+  assert.equal(decodeSwing("#cd=58").edgeReading, 338.9, "older links with a can diameter still work");
+  assert.equal(decodeSwing("#e=337&cd=58").edgeReading, 337);
 });
 
 test("the pelorus correction is added to the shadow reading", () => {
@@ -118,15 +123,14 @@ test("state round trip", () => {
     offsetMinutes: 60,
     variationOverride: NaN,
     pelorusCorrection: 1.5,
-    canDiameter: 58,
-    scale: "inner",
+    edgeReading: 339,
     observations: [
       { time: "08:30:00", compass: "45", shadow: "118" },
       { time: "08:32:10", compass: "", shadow: "" },
     ],
   };
   const hash = encodeSwing(state);
-  assert.match(hash, /cd=58&sc=i&o=08%3A30%3A00;45;118,08%3A32%3A10;;/);
+  assert.match(hash, /e=339&o=08%3A30%3A00;45;118,08%3A32%3A10;;/);
   assert.deepEqual(decodeSwing(hash), state);
   assert.deepEqual(decodeSwing("#lat=999&tz=x&o=%E0%A4%A").observations, [{ time: "", compass: "", shadow: "" }]);
   assert.ok(Number.isNaN(decodeSwing("#lat=999").latitude));

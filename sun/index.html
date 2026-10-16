@@ -47,7 +47,7 @@
           <p class="hint">Print at actual size (100%). The check bar should measure 100 mm.</p>
           <h3>You'll also need</h3>
           <ul>
-            <li>A drinks can (an ordinary 330 ml one, not dented).</li>
+            <li>A drinks can, or anything upright with straight sides: a bottle, mug or tin. This is your <strong>gnomon</strong>, the sundial word for whatever casts the shadow. Taller is better, because its shadow still reaches the scale when the sun is higher.</li>
             <li>Something flat and stiff to mount the card on, such as a clipboard, plus tape.</li>
             <li>Your phone, which keeps accurate time and knows where you are.</li>
             <li>A sunny day with calm water. Mornings and afternoons are best; around midday the shadow is short and the sun moves fast.</li>
@@ -65,12 +65,12 @@
         <ol>
           <li><strong>Mount the card level</strong> somewhere in full sun, clear of the shadows of the mast, rigging and sprayhood. On the coachroof or a cockpit seat works well. Tilting the card throws the reading off, especially when the sun is high.</li>
           <li><strong>Line up the BOW line</strong> exactly parallel to the boat's centreline, pointing forwards. Sight along it to the forestay or the middle of the bow, or use a straight edge against a fore-and-aft bulkhead. Every degree of misalignment is a degree of error on every reading.</li>
-          <li><strong>Stand the can</strong> on the circle of the "snail" that fits it, and note its diameter. Most drinks cans are 66 mm; slim ones are 58 mm.</li>
+          <li><strong>Stand the can</strong> on the circle of the "snail" that fits it, and follow that line round to the scale. Note the number where it meets the scale: that's where the shadow edge falls when the sun is dead ahead, about 336 for most cans.</li>
           <li><strong>Steer a steady heading and let the compass settle.</strong> A compass card swings and lags after every turn, so hold the heading steadily for at least 10 to 20 seconds, until the card has stopped moving, before you read anything. A reading taken while it's still swinging puts a false deviation into your table.</li>
-          <li><strong>Then, at the same moment, read three things:</strong> the <strong>time</strong> (tap "Now"), the <strong>compass</strong>, and where the <strong>anticlockwise edge of the shadow</strong> crosses the scale. That's the edge on the anticlockwise side of the shadow, normally the one with the lower number. Always read that same edge, on the same scale, for the whole swing.</li>
+          <li><strong>Then, at the same moment, read three things:</strong> the <strong>time</strong> (tap "Now"), the <strong>compass</strong>, and where the <strong>anticlockwise edge of the shadow</strong> crosses the scale. That's the edge on the anticlockwise side of the shadow, normally the one with the lower number. Always read that same edge for the whole swing. If the shadow is too short to reach the scale, the sun is too high to be useful: come back when it's lower.</li>
           <li><strong>Turn to the next heading</strong> and repeat, all the way round: every 30° or 45° is plenty.</li>
         </ol>
-        <p class="callout"><strong>Why only one edge?</strong> The boat never stays perfectly still, so you can only really read one thing at a time. The shadow is as wide as the can, so its edges run either side of the sun's line, never through the middle. The snail on the card shows this: each can circle runs into the line its shadow edge follows. OmniRose knows your can size and scale and takes the offset off for you.</p>
+        <p class="callout"><strong>Why only one edge?</strong> The boat never stays perfectly still, so you can only really read one thing at a time. The shadow is as wide as the can, so its edges run either side of the sun's line, never through the middle. The snail on the card shows this: each can circle runs into the line its shadow edge follows. Tell OmniRose where your can's line meets the scale and it adds the offset back for you.</p>
         <p class="hint">Tip: tap "Now" at the moment you read the compass. It stamps the time from your phone's clock, which is accurate to the second.</p>
       </section>
 
@@ -132,22 +132,13 @@
         <h2 id="readings-heading"><span class="step">4</span>Your readings</h2>
         <div class="form-row" style="margin-bottom:16px">
           <div>
-            <label for="can">Your can</label>
+            <label for="edge">Shadow edge with the sun dead ahead</label>
             <div class="range">
-              <select id="can">
-                <option value="66">Standard can (66 mm)</option>
-                <option value="58">Slim can (58 mm)</option>
-                <option value="other">Another size…</option>
-              </select>
-              <span id="can-other" hidden><input id="can-mm" type="number" min="20" max="150" step="any" inputmode="decimal" aria-label="Can diameter in mm"> mm</span>
+              <input id="edge" type="number" min="270" max="360" step="any" inputmode="decimal" value="336"> °
             </div>
           </div>
           <div>
-            <label for="scale">Reading on the</label>
-            <select id="scale">
-              <option value="outer">Outer scale</option>
-              <option value="inner">Inner scale (shorter shadows)</option>
-            </select>
+            <p class="hint" style="margin-top:0">Where your can's line on the snail meets the scale: about 336 for a standard 66 mm can, 339 for a slim one. Or steer straight at the sun and read where the shadow's anticlockwise edge falls.</p>
             <span class="hint" id="offset-hint"></span>
           </div>
         </div>

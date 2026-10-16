@@ -11,8 +11,7 @@ import {
   encodeSwing,
   formatCoordinate,
   parseCoordinate,
-  DEFAULT_CAN,
-  edgeOffset,
+  offsetFromEdge,
   parseShadow,
   reduceObservation,
   toUtc,
@@ -38,10 +37,7 @@ const els = {
   variationDir: $("#variation-dir"),
   variationHint: $("#variation-hint"),
   pc: $("#pc"),
-  can: $("#can"),
-  canOther: $("#can-other"),
-  canMm: $("#can-mm"),
-  scale: $("#scale"),
+  edge: $("#edge"),
   offsetHint: $("#offset-hint"),
   observations: $("#observations"),
   messages: $("#sun-messages"),
@@ -144,23 +140,9 @@ function currentState() {
     offsetMinutes: Number(els.tz.value),
     variationOverride: variationIsManual ? manualVariation() : NaN,
     pelorusCorrection: Number(els.pc.value) || 0,
-    canDiameter: canDiameter(),
-    scale: els.scale.value,
+    edgeReading: els.edge.value.trim() === "" ? NaN : Number(els.edge.value),
     observations: readObservations().map(({ time, compass, shadow }) => ({ time, compass, shadow })),
   };
-}
-
-function canDiameter() {
-  if (els.can.value !== "other") return Number(els.can.value);
-  const mm = Number(els.canMm.value);
-  return els.canMm.value.trim() !== "" && mm >= 20 && mm <= 150 ? mm : NaN;
-}
-
-function setCan(diameter) {
-  const preset = ["66", "58"].includes(String(diameter));
-  els.can.value = preset ? String(diameter) : "other";
-  els.canMm.value = preset ? "" : formatNumber(diameter);
-  els.canOther.hidden = preset;
 }
 
 function manualVariation() {
@@ -184,8 +166,7 @@ function load() {
   variationIsManual = Number.isFinite(state.variationOverride);
   if (variationIsManual) setVariationInputs(state.variationOverride);
   els.pc.value = state.pelorusCorrection || 0;
-  setCan(state.canDiameter ?? DEFAULT_CAN);
-  els.scale.value = state.scale;
+  els.edge.value = Number.isFinite(state.edgeReading) ? formatNumber(state.edgeReading) : "";
   els.observations.replaceChildren();
   state.observations.forEach((o) => addObservation(o));
   if (!state.observations.length) addObservation();
@@ -250,15 +231,13 @@ function update() {
   els.lonHint.textContent = els.lon.value && !Number.isFinite(longitude) ? "Not sure what that is: try 001°18.0'W or -1.3" : "";
   const variation = currentVariation(latitude, longitude);
 
-  const diameter = canDiameter();
-  const offset = Number.isFinite(diameter) ? edgeOffset(diameter, els.scale.value) : NaN;
-  els.canOther.hidden = els.can.value !== "other";
+  const offset = els.edge.value.trim() === "" ? NaN : offsetFromEdge(Number(els.edge.value));
   els.offsetHint.textContent = Number.isFinite(offset)
-    ? `With this can, the shadow edge reads ${offset.toFixed(1)}° short of the sun's bearing; OmniRose adds that back.`
+    ? `So the shadow edge reads ${formatNumber(Math.round(offset * 10) / 10)}° short of the sun's bearing; OmniRose adds that back.`
     : "";
 
   const messages = [];
-  if (!Number.isFinite(offset)) messages.push(li("Enter your can's diameter in millimetres.", "warning"));
+  if (!Number.isFinite(offset)) messages.push(li("Enter where your can's shadow edge meets the scale with the sun dead ahead: a number between 270 and 360, about 336 for most cans.", "warning"));
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) messages.push(li("Enter your position (step 3) to work out the sun's bearing.", "warning"));
   else if (!Number.isFinite(variation)) messages.push(li("Enter the variation (step 3).", "warning"));
 

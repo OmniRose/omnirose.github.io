@@ -2,11 +2,14 @@
 //
 // A drinks can stands on the OmniRose sun pelorus, which is lined up with
 // the boat's centreline. We read where the anticlockwise edge of the can's
-// shadow crosses the scale; adding the edge offset for the can and scale
-// (see draw/pelorus.js) gives the sun's bearing relative to the bow.
+// shadow crosses the scale. With the sun dead ahead that edge reads a little
+// under 360 (where the can's snail line meets the scale, about 336 for a
+// standard can); the gap is the edge offset, and adding it gives the sun's
+// bearing relative to the bow.
 // Knowing when and where the reading was taken gives the sun's true bearing
 // (azimuth), and so the boat's true heading:
 //
+//   edge offset            = 360 - edge reading with the sun dead ahead
 //   sun's relative bearing = edge reading + edge offset + pelorus correction
 //   true heading     = sun azimuth - sun's relative bearing
 //   magnetic heading = true heading - variation        (east positive)
@@ -19,6 +22,16 @@ import { mod360 } from "./curve.js";
 import { edgeOffset } from "./draw/pelorus.js";
 
 export { edgeOffset };
+
+// Where the shadow edge falls with the sun dead ahead, for a standard 66 mm
+// can (to the nearest degree, as you'd read it off the card).
+export const DEFAULT_EDGE = 336;
+
+// The edge offset for a dead-ahead edge reading, or NaN if it doesn't look
+// like one.
+export function offsetFromEdge(reading) {
+  return reading >= 270 && reading <= 360 ? 360 - reading : NaN;
+}
 import { azimuthRate, sunPosition } from "./sun.js";
 
 // Signed difference a - b, between -180 and 180.
@@ -86,11 +99,11 @@ export function reduceObservation({
 //
 //   #v=<vessel>&n=<note>&lat=<deg>&lon=<deg>&d=YYYY-MM-DD&tz=<minutes>
 //    &var=<variation override>&pc=<pelorus correction>
-//    &cd=<can diameter, mm>&sc=<scale: o (outer) or i (inner)>
+//    &e=<shadow edge reading with the sun dead ahead>
+//    (older links have &cd=<can diameter, mm> instead)
 //    &o=<HH:MM:SS>;<compass>;<shadow>,...
 
-const KEYS = ["v", "n", "lat", "lon", "d", "tz", "var", "pc", "cd", "sc", "o"];
-export const DEFAULT_CAN = 66;
+const KEYS = ["v", "n", "lat", "lon", "d", "tz", "var", "pc", "e", "cd", "o"];
 
 export function encodeSwing(state) {
   const parts = [];
@@ -107,8 +120,7 @@ export function encodeSwing(state) {
   add("tz", state.offsetMinutes);
   add("var", state.variationOverride);
   add("pc", state.pelorusCorrection || null);
-  add("cd", state.canDiameter && state.canDiameter !== DEFAULT_CAN ? state.canDiameter : null);
-  add("sc", state.scale === "inner" ? "i" : null);
+  add("e", Number.isFinite(state.edgeReading) && state.edgeReading !== DEFAULT_EDGE ? state.edgeReading : null);
   const rows = (state.observations || [])
     .filter((o) => o.time || o.compass || o.shadow)
     .map((o) => [o.time, o.compass, o.shadow].map((x) => encodeURIComponent(String(x ?? "").trim()).replace(/%2F/gi, "/")).join(";"));
@@ -126,8 +138,7 @@ export function decodeSwing(hash) {
     offsetMinutes: NaN,
     variationOverride: NaN,
     pelorusCorrection: 0,
-    canDiameter: DEFAULT_CAN,
-    scale: "outer",
+    edgeReading: DEFAULT_EDGE,
     observations: [],
   };
   const decode = (text) => {
@@ -137,6 +148,7 @@ export function decodeSwing(hash) {
       return "";
     }
   };
+  let legacyCan = NaN;
   for (const part of (hash || "").replace(/^#/, "").split("&")) {
     const eq = part.indexOf("=");
     if (eq < 0) continue;
@@ -152,8 +164,8 @@ export function decodeSwing(hash) {
     else if (key === "tz" && Number.isFinite(num) && Math.abs(num) <= 14 * 60) state.offsetMinutes = num;
     else if (key === "var" && Number.isFinite(num) && Math.abs(num) <= 180) state.variationOverride = num;
     else if (key === "pc" && Number.isFinite(num) && Math.abs(num) <= 180) state.pelorusCorrection = num;
-    else if (key === "cd" && num >= 20 && num <= 150) state.canDiameter = num;
-    else if (key === "sc") state.scale = value === "i" ? "inner" : "outer";
+    else if (key === "e" && Number.isFinite(offsetFromEdge(num))) state.edgeReading = num;
+    else if (key === "cd" && num >= 20 && num <= 150) legacyCan = num;
     else if (key === "o") {
       state.observations = value
         .split(",")
@@ -161,6 +173,10 @@ export function decodeSwing(hash) {
         .map((row) => row.split(";").map(decode))
         .map(([time = "", compass = "", shadow = ""]) => ({ time, compass, shadow }));
     }
+  }
+  // Older links gave the can's diameter; work out its dead-ahead edge reading.
+  if (Number.isFinite(legacyCan) && !/(^|[#&])e=/.test(hash)) {
+    state.edgeReading = Math.round((360 - edgeOffset(legacyCan)) * 10) / 10;
   }
   return state;
 }

@@ -22,19 +22,22 @@ import { PAGE_HEIGHT, PAGE_WIDTH, GREY, drawFooter, drawTextBlock } from "./comm
 const MM = 72 / 25.4;
 const CX = PAGE_WIDTH / 2;
 const CY = 430;
-export const OUTER = 228; // outer scale radius, points
-export const INNER = 150; // inner scale radius, points
+// The scale's radius, in points. A standard 330 ml can's shadow edge reaches
+// it until the sun is about 57° up (63° for a tall slim can). Higher than
+// that the sun's bearing changes fast and a slightly tilted card throws the
+// reading off, so there's no inner scale for shorter shadows.
+export const OUTER = 228;
 export const MM_TO_POINTS = MM;
-// Can diameters drawn on the snail, in mm; the bold ones are the common sizes.
-const SNAIL_DIAMETERS = [50, 54, 58, 62, 66, 70, 74, 78, 82];
-const BOLD_DIAMETERS = [58, 66];
+// Can diameters drawn on the snail, in mm. Lines alternate thick and thin so
+// each can be followed round to the scale; the common 58 mm and 66 mm cans
+// both land on thick ones.
+const SNAIL_DIAMETERS = [22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 74, 78, 82, 88, 94, 100];
 
 // How far (degrees) the anticlockwise shadow edge of a can of this diameter
-// (mm) reads short of the sun's bearing on the given scale ("outer" or "inner").
-export function edgeOffset(diameterMm, scale = "outer") {
+// (mm) reads short of the sun's bearing on the scale.
+export function edgeOffset(diameterMm) {
   const radius = (diameterMm / 2) * MM;
-  const ring = scale === "inner" ? INNER : OUTER;
-  return (Math.asin(Math.min(radius / ring, 1)) * 180) / Math.PI;
+  return (Math.asin(Math.min(radius / OUTER, 1)) * 180) / Math.PI;
 }
 const INK = [0, 0, 0];
 const LIGHT = [0.55, 0.55, 0.55];
@@ -82,7 +85,7 @@ export function drawPelorus(surface) {
   const steps = [
     ["1. Print at actual size (100%).", "The bar at the bottom should", "measure exactly 100 mm."],
     ["2. Stick it to something flat and", "fix it level, with the BOW line", "parallel to the centreline."],
-    ["3. Stand a can on the circle that", "fits it, and note its size. Use the", "same scale for the whole swing."],
+    ["3. Stand a can, or anything upright with", "straight sides, on the circle that fits it.", "Note where its line meets the scale.", "No shadow on the scale? Wait for a lower sun."],
     ["4. Hold each heading until the compass", "settles. Then note the time, the compass,", "and the anticlockwise edge of the shadow."],
   ];
   steps.forEach((lines, i) => {
@@ -105,26 +108,28 @@ export function drawPelorus(surface) {
     surface.line(CX + side * (OUTER + 22), CY, CX + side * (OUTER + 42), CY, { width: 1.2 });
   }
 
-  // Scales: the outer one for long shadows (lower sun), the inner one for
-  // shorter shadows (higher sun).
   scale(surface, OUTER, { outward: true, labelEvery: 10, tickScale: 1 });
-  scale(surface, INNER, { outward: true, labelEvery: 30, tickScale: 0.8 });
 
-  // The snail: can circles, each running into its shadow edge line.
-  for (const diameter of SNAIL_DIAMETERS) {
+  // The snail: can circles, each running into its shadow edge line. Each
+  // goes from the scale straight up the starboard side, then three quarters
+  // of the way round, ending on the centreline astern. The loops make it
+  // easy to centre the can, and where a can's line meets the scale is its
+  // shadow edge reading with the sun dead ahead.
+  const [sternX, sternY] = point(180, OUTER);
+  surface.line(CX, CY, sternX, sternY, { width: 0.35, color: LIGHT });
+  SNAIL_DIAMETERS.forEach((diameter, i) => {
     const r = (diameter / 2) * MM;
-    const bold = BOLD_DIAMETERS.includes(diameter);
-    const style = { width: bold ? 0.9 : 0.35, color: bold ? INK : LIGHT };
-    // From the outer scale, straight up the starboard side to where the line
-    // meets the circle, then round over the top to the port side.
+    const bold = i % 2 === 1;
+    const style = { width: bold ? 0.8 : 0.3, color: bold ? INK : LIGHT };
     const end = Math.sqrt(OUTER * OUTER - r * r);
     const path = [[CX + r, CY + end]];
-    for (let angle = 90; angle >= -90; angle -= 3) path.push(point(angle, r));
+    for (let angle = 90; angle >= -180; angle -= 3) path.push(point(angle, r));
     surface.polyline(path, style);
-    // Size label just below where each circle ends on the port side.
-    surface.text(String(diameter), CX - r - 1.6, CY + 3, { size: 4.5, color: bold ? INK : LIGHT, angle: 90 });
-  }
-  surface.text("can diameter (mm)", CX - 25 * MM, CY + 20, { size: 5.5, color: LIGHT, align: "right" });
+    // Size label tucked under the end of each loop, beside the centreline.
+    surface.text(String(diameter), CX - 1.5, CY + r + 4.2, { size: 4.5, color: bold ? INK : LIGHT, align: "right" });
+  });
+  const largest = (SNAIL_DIAMETERS[SNAIL_DIAMETERS.length - 1] / 2) * MM;
+  surface.text("diameter (mm)", CX - 1.5, CY + largest + 14, { size: 5.5, color: LIGHT, align: "right" });
   surface.line(CX - 6, CY, CX + 6, CY, { width: 0.4, color: LIGHT });
   surface.line(CX, CY - 6, CX, CY + 6, { width: 0.4, color: LIGHT });
 
