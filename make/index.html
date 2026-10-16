@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Make your deviation table · OmniRose</title>
-  <meta name="description" content="Enter your compass deviation readings and print a deviation table and conversion rose for your boat. Free, no sign-up.">
+  <title>Make your conversion rose · OmniRose</title>
+  <meta name="description" content="Enter your compass deviation readings and print a conversion rose and deviation table for your boat. Free, no sign-up.">
   <link rel="icon" href="../img/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../css/site.css">
-  <meta property="og:title" content="Make your deviation table · OmniRose">
-  <meta property="og:description" content="Turn your compass deviation readings into a printable deviation table and conversion rose. Free, no sign-up.">
+  <meta property="og:title" content="Make your conversion rose · OmniRose">
+  <meta property="og:description" content="Turn your compass deviation readings into a printable conversion rose and deviation table. Free, no sign-up.">
   <meta property="og:image" content="https://omnirose.github.io/img/og.png">
   <script type="module" src="../js/make.js"></script>
 </head>
@@ -17,7 +17,7 @@
     <div class="wrap">
       <a class="brand" href="../"><img src="../img/icon.svg" alt="">OmniRose</a>
       <nav class="site-nav" aria-label="Main">
-        <a href="./" aria-current="page">Make your table</a>
+        <a href="./" aria-current="page">Make your rose</a>
         <a href="../sun/">Swing by the sun</a>
         <a href="../learn/deviation.html">What is deviation?</a>
         <a href="../learn/swinging.html">Swinging a compass</a>
@@ -29,8 +29,8 @@
 
   <main>
     <div class="wrap">
-      <h1>Make your deviation table</h1>
-      <p class="lede">Type in your deviation readings and out comes a tidy deviation table and a conversion rose, ready to print, laminate and keep at the chart table.</p>
+      <h1>Make your conversion rose</h1>
+      <p class="lede">Type in your deviation readings and out comes a conversion rose for your boat: true, magnetic and compass on one card, ready to print, laminate and keep at the chart table. A classic deviation table comes too.</p>
 
       <noscript><p class="callout warm">This tool needs JavaScript. Everything happens in your browser and nothing is sent anywhere.</p></noscript>
 
@@ -86,14 +86,14 @@
 
         <div class="sticky">
           <section class="card" aria-labelledby="preview-heading">
-            <h2 id="preview-heading"><span class="step">3</span>Check the curve</h2>
+            <h2 id="preview-heading"><span class="step">3</span>See your rose</h2>
             <div class="tabs" role="tablist" aria-label="Preview">
-              <button type="button" role="tab" aria-selected="true" data-view="magnetic">Deviation table</button>
+              <button type="button" role="tab" aria-selected="true" data-view="rose">Conversion rose</button>
+              <button type="button" role="tab" aria-selected="false" data-view="magnetic">Deviation table</button>
               <button type="button" role="tab" aria-selected="false" data-view="compass">Combined table</button>
-              <button type="button" role="tab" aria-selected="false" data-view="rose">Conversion rose</button>
             </div>
             <div class="preview" id="preview" role="tabpanel" aria-live="off">
-              <p class="empty">Enter at least three readings, or try an example, and your table will appear here.</p>
+              <p class="empty">Enter at least three readings, or try an example, and your rose will appear here.</p>
             </div>
             <p class="hint" id="fit-summary"></p>
             <details class="advanced">
@@ -109,14 +109,6 @@
       <section class="card" aria-labelledby="print-heading">
         <h2 id="print-heading"><span class="step">4</span>Print it</h2>
         <div class="downloads grid-2">
-          <div class="download-group">
-            <h3>Deviation tables</h3>
-            <p class="hint">The <strong>deviation table</strong> is the classic chart-table card. The <strong>combined table</strong> also has compass headings on the right, so you can look up either kind of heading directly.</p>
-            <p class="toolbar">
-              <button type="button" class="primary" data-download="magnetic">Deviation table (PDF)</button>
-              <button type="button" class="primary" data-download="compass">Combined table (PDF)</button>
-            </p>
-          </div>
           <div class="download-group">
             <h3>Conversion roses</h3>
             <p class="hint">One page for each degree of variation. You'll find the variation for your area printed in the compass rose on your chart.</p>
@@ -166,6 +158,14 @@
               <button type="button" class="primary" data-download="rose" id="rose-button">Conversion roses (PDF)</button>
             </p>
             <p class="hint" id="rose-hint"></p>
+          </div>
+          <div class="download-group">
+            <h3>Deviation tables</h3>
+            <p class="hint">The <strong>deviation table</strong> is the classic chart-table card. The <strong>combined table</strong> also has compass headings on the right, so you can look up either kind of heading directly.</p>
+            <p class="toolbar">
+              <button type="button" class="primary" data-download="magnetic">Deviation table (PDF)</button>
+              <button type="button" class="primary" data-download="compass">Combined table (PDF)</button>
+            </p>
           </div>
         </div>
         <div class="download-group">

@@ -811,3 +811,31 @@ details.advanced summary {
   }
 }
 
+/* Home page: the rose explained, and the table as a smaller aside. */
+.rose-feature {
+  border-top: 4px solid var(--coral);
+}
+
+.table-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 160px) 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.table-feature img {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+@media (max-width: 560px) {
+  .table-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .table-feature img {
+    width: min(100%, 200px);
+    margin: 0 auto;
+  }
+}

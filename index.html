@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OmniRose · Free deviation tables and conversion roses</title>
-  <meta name="description" content="Your boat's compass is a little bit wrong. OmniRose turns your deviation readings into a printable deviation table and conversion rose. Free, private, no sign-up.">
+  <title>OmniRose · Free conversion roses for your boat's compass</title>
+  <meta name="description" content="Your boat's compass is a little bit wrong. OmniRose turns your deviation readings into a printable conversion rose: true, magnetic and compass on one card, so you convert any heading by reading straight across. Free, private, no sign-up.">
   <link rel="icon" href="img/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/site.css">
-  <meta property="og:title" content="OmniRose · Free deviation tables and conversion roses">
-  <meta property="og:description" content="Your boat's compass is a little bit wrong. Make a printable deviation table and conversion rose for it, free.">
+  <meta property="og:title" content="OmniRose · Free conversion roses for your boat's compass">
+  <meta property="og:description" content="Your boat's compass is a little bit wrong. Make a conversion rose for it: true, magnetic and compass on one card. Free.">
   <meta property="og:image" content="https://omnirose.github.io/img/og.png">
   <meta property="og:url" content="https://omnirose.github.io/">
   <meta name="twitter:card" content="summary_large_image">
@@ -18,7 +18,7 @@
     <div class="wrap">
       <a class="brand" href="./"><img src="img/icon.svg" alt="">OmniRose</a>
       <nav class="site-nav" aria-label="Main">
-        <a href="make/">Make your table</a>
+        <a href="make/">Make your rose</a>
         <a href="sun/">Swing by the sun</a>
         <a href="learn/deviation.html">What is deviation?</a>
         <a href="learn/swinging.html">Swinging a compass</a>
@@ -33,9 +33,9 @@
       <section class="hero">
         <div>
           <h1>Your compass is fibbing. Just a little.</h1>
-          <p class="lede">The engine, the electronics, even the tins of beans in the locker all tug at your boat's compass. OmniRose turns a few simple readings into a clear deviation table and a conversion rose, so you know exactly which way you're really heading.</p>
+          <p class="lede">The engine, the electronics, even the tins of beans in the locker all tug at your boat's compass. OmniRose turns a few simple readings into a <strong>conversion rose</strong>: true, magnetic and your own compass on one card, so you go from any one to any other by reading straight across. No sums, no tables to look up twice.</p>
           <p class="toolbar">
-            <a class="button primary" href="make/">Make your deviation table</a>
+            <a class="button primary" href="make/">Make your conversion rose</a>
             <a class="button" href="learn/deviation.html">Wait, what's deviation?</a>
           </p>
           <p class="hint">Free and open source. No sign-up, no adverts, and your readings never leave your browser.</p>
@@ -57,24 +57,29 @@
         </div>
         <div class="card">
           <h3><span class="step">3</span>Print, laminate, done</h3>
-          <p>Download your deviation table and conversion roses as PDFs. Each one has a QR code that brings your readings back whenever you need a reprint.</p>
+          <p>Download your conversion roses, and a classic deviation table if you like, as PDFs. Each one has a QR code that brings your readings back whenever you need a reprint.</p>
         </div>
       </div>
 
-      <h2>What you get</h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3>A deviation table</h3>
-          <p>The classic card for the chart table: your compass's error on every heading, drawn as a curve so you can read it at a glance. There's also a <strong>combined table</strong> with compass headings on the other side, which saves you a second round of correction.</p>
-          <img src="img/example-table.svg" alt="An example deviation table: a vertical grid with headings from 0° to 360° down the side, deviation across the top, and a smooth curve through red reading dots." width="590" height="790" loading="lazy" style="display:block;width:min(100%,300px);margin:12px auto 0;border:1px solid var(--line);border-radius:8px">
-        </div>
-        <div class="card">
-          <h3>A conversion rose</h3>
-          <p>Three rings, one each for true, magnetic and compass, lined up so you can convert any heading just by reading straight across. No sums, no "add east or was it west?" at 3am. <a href="learn/using-the-rose.html">See how to use it.</a></p>
+      <h2>Every heading, one card</h2>
+      <div class="card rose-feature">
+        <div>
+          <p class="lede">A deviation table only tells you the compass's error. You still have to add or subtract it, then apply variation as well, and the sums go one way for true to compass and the other way back. A <strong>conversion rose</strong> does all of that on paper, for every heading at once.</p>
+          <p>Three rings sit one inside the other: <strong style="color:#8a2b2b">magnetic</strong> on the outside, <strong style="color:#2b6b2b">true</strong> in the middle and <strong style="color:#2b2b8a">compass</strong> on the inside. They're lined up so the same direction is at the same angle on all three, with your variation and your compass's deviation built in. To convert, find the number you have and read across to the ring you want. No "add east or was it west?" at 3am. <a href="learn/using-the-rose.html">See how to use it.</a></p>
           <div class="callout">
             <p class="mnemonic" style="margin:0">Want to steer 045° true?</p>
             <p style="margin:0.3em 0 0">Find 45 on the green ring and read across: that's 047° magnetic and 050° on <em>Saucy Sue's</em> compass. Done.</p>
           </div>
+          <p>That's where the name comes from: <em>omni</em>, every heading, every direction of conversion, on one rose. Print a page for each degree of variation you sail in.</p>
+          <p class="toolbar"><a class="button primary" href="make/">Make your conversion rose</a></p>
+        </div>
+      </div>
+
+      <h2>And a deviation table too</h2>
+      <div class="card table-feature">
+        <img src="img/example-table.svg" alt="An example deviation table: a vertical grid with headings from 0° to 360° down the side, deviation across the top, and a smooth curve through red reading dots." width="590" height="790" loading="lazy">
+        <div>
+          <p>If you prefer the classic card for the chart table, you get that as well: your compass's error on every heading, drawn as a curve so you can read it at a glance. There's also a <strong>combined table</strong> with compass headings on the other side, which saves you a second round of correction. And a <strong>swing record</strong> of your readings to keep with them.</p>
         </div>
       </div>
 

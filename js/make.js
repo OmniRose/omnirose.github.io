@@ -1,4 +1,4 @@
-// The "Make your table" page: readings in, preview and PDFs out.
+// The "Make your rose" page: readings in, preview and PDFs out.
 
 import { Curve, CurveError, availableTerms, chooseTerms, eastWest, formatNumber, validateReadings } from "./curve.js";
 import { PAGE_HEIGHT, PAGE_WIDTH } from "./draw/common.js";
@@ -34,7 +34,7 @@ const els = {
   copyLink: $("#copy-link"),
 };
 
-let view = "magnetic";
+let view = "rose";
 let curve = null;
 let termsChoice = null; // null means automatic
 
@@ -243,7 +243,7 @@ function renderPreview(state) {
   $$(".tabs [role=tab]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.view === view)));
   if (!curve) {
     els.preview.innerHTML =
-      '<p class="empty">Enter at least three readings, or try an example, and your table will appear here.</p>';
+      '<p class="empty">Enter at least three readings, or try an example, and your rose will appear here.</p>';
     return;
   }
   const surface = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
