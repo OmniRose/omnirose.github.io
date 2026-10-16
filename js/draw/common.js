@@ -68,9 +68,20 @@ export function drawTextBlock(
   return y;
 }
 
+// The boat's name and which compass. A missing one becomes a grey label and
+// a line to write it on, so a printout can't end up unattributed.
 export function drawTitles(surface, { vessel, note }, y) {
-  y = drawTextBlock(surface, vessel, 32, y, { verticalShift: "text" });
-  return drawTextBlock(surface, note, 18, y, { verticalShift: "text" });
+  y = vessel ? drawTextBlock(surface, vessel, 32, y, { verticalShift: "text" }) : drawBlank(surface, "Boat", 18, y, 240);
+  return note ? drawTextBlock(surface, note, 18, y, { verticalShift: "text" }) : drawBlank(surface, "Compass", 12, y, 160);
+}
+
+function drawBlank(surface, label, size, y, lineWidth) {
+  const gap = size / 3;
+  const left = (PAGE_WIDTH - textWidth(label, size) - gap - lineWidth) / 2;
+  const lineX = left + textWidth(label, size) + gap;
+  surface.text(label, left, y, { size, color: GREY });
+  surface.line(lineX, y + 2, lineX + lineWidth, y + 2, { width: 0.5, color: GREY });
+  return y + 1.2 * textHeight(label, size) + size / 2;
 }
 
 // A QR code linking back to the readings, with a caption below. (x, y) is
