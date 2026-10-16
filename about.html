@@ -7,6 +7,7 @@
   <meta name="description" content="About OmniRose: a free, open source tool for compass deviation tables and conversion roses. How it works, privacy, and how to help.">
   <link rel="icon" href="img/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/site.css">
+  <script type="module" src="js/contact.js"></script>
   <meta property="og:title" content="About · OmniRose">
   <meta property="og:image" content="https://omnirose.github.io/img/og.png">
 </head>
@@ -28,7 +29,8 @@
   <main>
     <div class="wrap prose">
       <h1>About OmniRose</h1>
-      <p class="lede">OmniRose started in 2015 as a small paid service for sailors who wanted a tidy deviation card and a conversion rose for their boat. It's now free and open source, for anyone who finds it useful.</p>
+      <p class="lede">OmniRose makes conversion roses: true, magnetic and your own compass on one card. It's free and open source, for anyone who finds it useful.</p>
+      <p>It was first written in 2015 as a Python and Django website, then set aside unfinished. In 2026 the code was handed to Claude, Anthropic's AI, to polish up and turn into the free website you're using now, with the original author checking each change along the way.</p>
 
       <h2>Your data stays with you</h2>
       <ul>
@@ -46,7 +48,7 @@
 
       <h2 id="roadmap">Also in OmniRose</h2>
       <ul>
-        <li><strong><a href="sun/">Swing by the sun</a></strong>: a printable sun pelorus and a drinks can are all you need to measure your deviation. The sun's position comes from NOAA's solar position algorithm.</li>
+        <li><strong><a href="sun/">Swing by the sun</a></strong> (experimental, feedback welcome): a printable sun pelorus and a drinks can are all you need to measure your deviation. The sun's position comes from NOAA's solar position algorithm.</li>
         <li><strong>"Where are you sailing?"</strong>: on the tool page, pick your cruising area and OmniRose works out which variation pages to print, using the World Magnetic Model.</li>
       </ul>
       <p>Ideas for what's next are welcome: <a href="https://github.com/OmniRose/omnirose.github.io/issues">open an issue</a>.</p>
@@ -58,15 +60,19 @@
         <li>The site is plain HTML and JavaScript with no build step. Clone it, run a local web server, and open it in your browser. The README has the details.</li>
       </ul>
 
+      <h2 id="contact">Get in touch</h2>
+      <p>For bugs and ideas, an <a href="https://github.com/OmniRose/omnirose.github.io/issues">issue on GitHub</a> is best, because others can see and join in. For anything else, email the original author: <button type="button" class="link-button" data-contact>show email address</button></p>
+      <noscript><p class="hint">The email address needs JavaScript to show, which keeps it away from spam robots. GitHub issues work without it.</p></noscript>
+
       <h2>The small print</h2>
       <p>OmniRose is a navigation aid, provided as-is and without warranty. It's only as good as the readings you give it. Always cross-check your position by other means, and keep a good lookout.</p>
-      <p>The original OmniRose website (2015–2016) was written in Python and Django; its code is preserved in the repository's history.</p>
+      <p>The original 2015 Django code is preserved in the repository's history.</p>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="about.html">About</a></p>
+      <p>OmniRose is free and open source (MIT). <a href="https://github.com/OmniRose/omnirose.github.io">Source on GitHub</a> · <a href="https://github.com/OmniRose/omnirose.github.io/issues">Issues and ideas</a> · <a href="about.html">About</a></p>
       <p>Always cross-check your navigation. OmniRose is a helpful aid, not a substitute for good seamanship.</p>
     </div>
   </footer>

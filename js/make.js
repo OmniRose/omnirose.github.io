@@ -11,6 +11,9 @@ import { decodeState, encodeState } from "./state.js";
 import { setupWhere } from "./where.js";
 
 const MAX_ROSE_PAGES = 10;
+// With no variation chosen yet, preview the rose at this much, so the
+// magnetic and true rings visibly differ and show what the rose is for.
+const PREVIEW_VARIATION = -5;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -22,6 +25,7 @@ const els = {
   messages: $("#messages"),
   preview: $("#preview"),
   fitSummary: $("#fit-summary"),
+  previewNote: $("#preview-note"),
   terms: $("#terms"),
   example: $("#example"),
   varFrom: $("#var-from"),
@@ -249,10 +253,14 @@ function renderPreview(state) {
   const surface = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
   const details = { vessel: state.vessel, note: state.note, url: shareUrl() };
   let title;
+  els.previewNote.hidden = true;
   if (view === "rose") {
     const [from, to] = variationRange();
-    drawRose(surface, curve, Math.min(from, to), details);
-    title = `Conversion rose for ${eastWest(Math.min(from, to))} variation`;
+    const unset = from === 0 && to === 0;
+    const variation = unset ? PREVIEW_VARIATION : Math.min(from, to);
+    drawRose(surface, curve, variation, details);
+    title = `Conversion rose for ${eastWest(variation)} variation`;
+    els.previewNote.hidden = !unset;
   } else {
     drawTable(surface, curve, { right: view, ...details });
     title = tableTitle(view, state.vessel);

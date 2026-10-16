@@ -337,6 +337,20 @@ label {
   border-left-color: var(--coral);
 }
 
+/* A small label after a heading, such as "Experimental". */
+.tag {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 0.4em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--coral);
+  border: 1.5px solid var(--coral);
+  border-radius: 999px;
+  padding: 0.2em 0.7em;
+}
+
 .figure {
   background: var(--card);
   border: 1px solid var(--line);
@@ -838,4 +852,22 @@ details.advanced summary {
     width: min(100%, 200px);
     margin: 0 auto;
   }
+}
+
+/* A button that looks like a link, such as "show email address". */
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--sea);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.link-button:hover {
+  background: none;
+  color: var(--coral);
 }

@@ -71,7 +71,7 @@ Some details worth knowing:
 
 ## History
 
-OmniRose began in 2015 as a paid Django web app. That code is preserved at the [`django-final`](https://github.com/OmniRose/omnirose.github.io/tree/django-final) tag, and an unfinished experiment with swinging a compass using the sun is on the `swinging` branch.
+OmniRose was first written in 2015 as a Django web app and then set aside unfinished. In 2026 it was handed to Claude to polish up and rebuild as this static site. The original code is preserved at the [`django-final`](https://github.com/OmniRose/omnirose.github.io/tree/django-final) tag, and an unfinished experiment with swinging a compass using the sun is on the `swinging` branch.
 
 ## Licence
 
