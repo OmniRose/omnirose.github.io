@@ -11,6 +11,7 @@
 // correction).
 
 import { eastWest } from "../curve.js";
+import { CAP_HEIGHT, textWidth } from "./font.js";
 import {
   EDGE_INDENT,
   PAGE_HEIGHT,
@@ -34,6 +35,9 @@ const WIDTH_MAJOR = 0.1;
 const WIDTH_CURVE = 1;
 const READING_RADIUS = 3;
 const READING_COLOUR = [0.85, 0, 0];
+
+// As on the rose, a superscript M or C replaces the "°" on heading labels.
+const SUPERSCRIPTS = { magnetic: "M", compass: "C" };
 
 const AXIS_LABELS = {
   magnetic: "ship's heading (magnetic)",
@@ -88,10 +92,13 @@ export function drawTable(surface, curve, { right = "magnetic", vessel = "", not
       const xEnd = side === "left" ? gridX(deviation) : gridRight;
       surface.line(xStart, y, xEnd, y, { width: degree % 90 === 0 ? WIDTH_CARDINAL : WIDTH_MAJOR });
 
-      const label = `${labelDegree}°`;
+      const label = String(labelDegree);
       const labelY = y + textHeight(label, 6) / 2;
-      if (side === "left") surface.text(label, xStart - 2, labelY, { size: 6, align: "right" });
-      else surface.text(label, xEnd + 2, labelY, { size: 6 });
+      const superscript = SUPERSCRIPTS[headingType];
+      const width = textWidth(label, 6) + textWidth(superscript, 4);
+      const labelX = side === "left" ? xStart - 2 - width : xEnd + 2;
+      surface.text(label, labelX, labelY, { size: 6 });
+      surface.text(superscript, labelX + textWidth(label, 6), labelY - 6 * CAP_HEIGHT + 4 * CAP_HEIGHT, { size: 4 });
     }
   }
   // ---- Deviation lines, top to bottom.
