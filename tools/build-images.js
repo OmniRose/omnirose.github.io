@@ -5,6 +5,7 @@
 import { writeFileSync } from "node:fs";
 import { Curve } from "../js/curve.js";
 import { PAGE_HEIGHT, PAGE_WIDTH } from "../js/draw/common.js";
+import { drawPelorus } from "../js/draw/pelorus.js";
 import { drawRose } from "../js/draw/rose.js";
 import { SvgSurface } from "../js/draw/surface.js";
 import { drawTable } from "../js/draw/table.js";
@@ -23,3 +24,7 @@ writeFileSync(new URL("../img/example-table.svg", import.meta.url), table.toSvg(
 const rose = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
 drawRose(rose, curve, -2, details);
 writeFileSync(new URL("../img/example-rose.svg", import.meta.url), rose.toSvg(0, { title: "Example conversion rose" }));
+
+const pelorus = new SvgSurface(PAGE_WIDTH, PAGE_HEIGHT);
+drawPelorus(pelorus);
+writeFileSync(new URL("../img/example-pelorus.svg", import.meta.url), pelorus.toSvg(0, { title: "The OmniRose sun pelorus" }));
