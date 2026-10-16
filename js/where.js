@@ -53,17 +53,25 @@ export async function setupWhere({ container, modelUrl, onRange }) {
 
   select.addEventListener("change", () => {
     const region = regions[Number(select.value)];
+    resetLocate();
     if (region) show(region, region.name);
   });
+
+  const locateLabel = locate.textContent;
+  const resetLocate = () => (locate.textContent = locateLabel);
+  const degrees = (value, positive, negative) => `${Math.abs(value).toFixed(1)}°${value < 0 ? negative : positive}`;
 
   locate.addEventListener("click", () => {
     if (!navigator.geolocation) {
       result.textContent = "Your browser can't share its location. Try picking an area instead.";
       return;
     }
-    result.textContent = "Finding you…";
+    locate.textContent = "Finding you…";
+    result.textContent = "";
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
+        select.value = "";
+        locate.textContent = `✓ Using your location: ${degrees(coords.latitude, "N", "S")} ${degrees(coords.longitude, "E", "W")}`;
         // About 30 nautical miles each way.
         const dLat = 0.5;
         const dLon = Math.min(0.5 / Math.max(Math.cos((coords.latitude * Math.PI) / 180), 0.1), 10);
@@ -79,6 +87,7 @@ export async function setupWhere({ container, modelUrl, onRange }) {
         );
       },
       () => {
+        resetLocate();
         result.textContent = "Couldn't get your location. Try picking an area instead.";
       },
       { maximumAge: 600_000, timeout: 15_000 },
@@ -107,6 +116,7 @@ export async function setupWhere({ container, modelUrl, onRange }) {
       return;
     }
     select.value = "";
+    resetLocate();
     show(box, "In that area");
   });
 }
