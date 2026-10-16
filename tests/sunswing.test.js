@@ -36,7 +36,7 @@ function anticlockwiseEdgeReading(sunRelative, diameterMm, ringRadius) {
 test("a simulated swing gives back the boat's deviations", () => {
   // Saucy Sue in the Solent on a summer morning, with 1°E variation, turning
   // through 12 headings two minutes apart, read on both scales with two cans.
-  const boat = new Curve(examples[1].readings);
+  const boat = new Curve(examples[2].readings);
   const latitude = 50.78;
   const longitude = -1.3;
   const variation = 1;

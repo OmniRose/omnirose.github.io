@@ -11,7 +11,7 @@ import { drawTable } from "../js/draw/table.js";
 import { examples } from "../js/examples.js";
 import { encodeState } from "../js/state.js";
 
-const boat = examples[1];
+const boat = examples[2];
 const curve = new Curve(boat.readings);
 const url = `https://omnirose.github.io/make/${encodeState({ ...boat, terms: null, variation: [-2, -2] })}`;
 const details = { vessel: boat.vessel, note: boat.note, url, date: new Date("2026-01-01") };

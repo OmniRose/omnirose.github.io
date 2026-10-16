@@ -1,8 +1,18 @@
-// Made-up boats for "Try an example". The readings were generated from
+// Boats for "Try an example". The first is the deviation table from the RYA
+// training almanac. The rest are made up: their readings were generated from
 // typical deviation curves with a little measurement noise, then rounded to
 // half degrees as you would write them down on a real swing.
 
 export const examples = [
+  {
+    vessel: "S/V Elizabeth II",
+    note: "Starboard wheel compass",
+    description: "the RYA training almanac's table, every 22.5°",
+    readings: [
+      [0, -4], [22.5, -2], [45, 0], [67.5, 2], [90, 4], [112.5, 5], [135, 6], [157.5, 5],
+      [180, 4], [202.5, 2], [225, 0], [247.5, -2], [270, -4], [292.5, -5], [315, -6], [337.5, -5],
+    ],
+  },
   {
     vessel: "Puffin",
     note: "Steering compass",
