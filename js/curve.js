@@ -35,6 +35,13 @@ export function formatNumber(n) {
   return String(Math.round(n * 1000) / 1000);
 }
 
+// A bearing written out in full: "045°M", "022.5°C".
+export function bearing(degrees, letter) {
+  const text = formatNumber(degrees);
+  const [whole] = text.split(".");
+  return `${"0".repeat(Math.max(0, 3 - whole.length))}${text}°${letter}`;
+}
+
 // The most terms the automatic choice will use: enough for the classic A to E
 // coefficients plus one more harmonic.
 export const MAX_AUTO_TERMS = 7;

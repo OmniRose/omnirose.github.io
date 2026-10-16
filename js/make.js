@@ -1,8 +1,9 @@
 // The "Make your rose" page: readings in, preview and PDFs out.
 
-import { Curve, CurveError, availableTerms, chooseTerms, eastWest, formatNumber, validateReadings } from "./curve.js";
+import { Curve, CurveError, availableTerms, bearing, chooseTerms, eastWest, formatNumber, validateReadings } from "./curve.js";
 import { PAGE_HEIGHT, PAGE_WIDTH } from "./draw/common.js";
 import { drawRecord, headingsEvery } from "./draw/record.js";
+import { mailto } from "./email.js";
 import { drawRose, drawRoses } from "./draw/rose.js";
 import { PdfSurface, SvgSurface } from "./draw/surface.js";
 import { drawTable, tableTitle } from "./draw/table.js";
@@ -38,6 +39,7 @@ const els = {
   roseHint: $("#rose-hint"),
   shareUrl: $("#share-url"),
   copyLink: $("#copy-link"),
+  emailLink: $("#email-link"),
 };
 
 let view = "rose";
@@ -156,6 +158,7 @@ function update() {
   const anyDeviation = rows.some(([, d]) => Number.isFinite(d));
   const incompleteRows = anyDeviation ? rows.filter(([h, d]) => Number.isFinite(h) !== Number.isFinite(d)).length : 0;
   const { readings, errors, warnings } = validateReadings(complete);
+  els.emailLink.href = emailHref(state, complete);
 
   markRows(rows);
 
@@ -188,6 +191,23 @@ function markRows(rows) {
       (Number.isFinite(d) && Math.abs(d) > 90);
     tr.classList.toggle("has-error", bad);
   });
+}
+
+// The readings as typed (heading order), the variation and the link back.
+function emailHref(state, readings) {
+  const boat = [state.vessel, state.note].filter(Boolean).join(", ");
+  const lines = [`Compass deviation readings${boat ? ` for ${boat}` : ""}, from OmniRose.`, ""];
+  if (readings.length) {
+    lines.push("Magnetic heading: deviation");
+    for (const [h, d] of [...readings].sort((a, b) => a[0] - b[0])) lines.push(`${bearing(h, "M")}: ${eastWest(d)}`);
+    lines.push("");
+  }
+  const [from, to] = variationRange();
+  if (state.variation) {
+    lines.push(`Variation for the roses: ${from === to ? eastWest(from) : `${eastWest(Math.min(from, to))} to ${eastWest(Math.max(from, to))}`}`, "");
+  }
+  lines.push("Open, edit or reprint the table and roses here:", shareUrl());
+  return mailto(`OmniRose readings${state.vessel ? ` for ${state.vessel}` : ""}`, lines);
 }
 
 function updateTermsSelect(readings) {

@@ -5,7 +5,7 @@
 // of the swing behind a table and rose: each reading, what the compass
 // showed, and how far the reading sits from the fitted curve.
 
-import { eastWest, formatNumber, mod360 } from "../curve.js";
+import { bearing, eastWest, formatNumber, mod360 } from "../curve.js";
 import { CAP_HEIGHT, textWidth } from "./font.js";
 import {
   EDGE_INDENT,
@@ -50,13 +50,6 @@ export function headingsEvery(step) {
   const headings = [];
   for (let h = 0; h < 360; h += step) headings.push(h);
   return headings;
-}
-
-// "045°M", "022.5°M"
-function bearing(degrees, letter) {
-  const text = formatNumber(degrees);
-  const [whole] = text.split(".");
-  return `${"0".repeat(Math.max(0, 3 - whole.length))}${text}°${letter}`;
 }
 
 // Either `curve` (a filled record) or `headings` (a blank one).

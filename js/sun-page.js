@@ -1,8 +1,9 @@
 // The "Swing by the sun" page: pelorus printout, readings in, deviations out.
 
-import { eastWest, formatNumber } from "./curve.js";
+import { bearing, eastWest, formatNumber } from "./curve.js";
 import { PAGE_HEIGHT, PAGE_WIDTH } from "./draw/common.js";
 import { drawPelorus } from "./draw/pelorus.js";
+import { mailto } from "./email.js";
 import { PdfSurface, SvgSurface } from "./draw/surface.js";
 import { remember, restore } from "./remember.js";
 import { encodeState } from "./state.js";
@@ -43,6 +44,7 @@ const els = {
   messages: $("#sun-messages"),
   summary: $("#result-summary"),
   toTable: $("#to-table"),
+  emailSwing: $("#email-swing"),
 };
 
 let model = null;
@@ -242,10 +244,13 @@ function update() {
   else if (!Number.isFinite(variation)) messages.push(li("Enter the variation (step 3).", "warning"));
 
   const results = [];
+  const emailRows = [];
   for (const obs of readObservations()) {
     const out = obs.element.querySelector(".obs-result");
     out.replaceChildren();
     if (!obs.time && !obs.compass && !obs.shadow) continue;
+    const row = `${obs.time || "--:--:--"}  compass ${obs.compass ? `${obs.compass}°` : "?"}  shadow ${obs.shadow || "?"}`;
+    emailRows.push(row);
 
     const date = toUtc(els.date.value, obs.time, Number(els.tz.value));
     const compass = obs.compass === "" ? NaN : Number(obs.compass);
@@ -276,6 +281,7 @@ function update() {
       pelorusCorrection: Number(els.pc.value) || 0,
     });
     results.push(r);
+    emailRows[emailRows.length - 1] = `${row}  ->  ${bearing(Math.round(r.magneticHeading * 10) / 10, "M")}, deviation ${eastWest(Math.round(r.deviation * 10) / 10)}`;
     const working = document.createElement("p");
     working.className = "obs-working";
     working.innerHTML =
@@ -288,6 +294,25 @@ function update() {
 
   els.messages.replaceChildren(...messages);
   updateSummary(state, results, variation);
+  els.emailSwing.href = emailHref(state, emailRows, variation, offset);
+}
+
+// The raw readings (with the deviation each gives, where it can be worked
+// out), the settings they depend on, and links back to this page and on to
+// the rose.
+function emailHref(state, rows, variation, offset) {
+  const boat = [state.vessel, state.note].filter(Boolean).join(", ");
+  const lines = [`Sun swing readings${boat ? ` for ${boat}` : ""}, from OmniRose.`, ""];
+  const where = Number.isFinite(state.latitude) && Number.isFinite(state.longitude)
+    ? `, at ${formatCoordinate(state.latitude, "lat")} ${formatCoordinate(state.longitude, "lon")}` : "";
+  const clock = Number.isFinite(state.offsetMinutes) ? els.tz.selectedOptions[0]?.textContent : "";
+  lines.push(`${state.date}${where}${clock ? `, clock ${clock}` : ""}`);
+  if (Number.isFinite(variation)) lines.push(`Variation ${eastWest(Math.round(variation * 10) / 10)}`);
+  if (Number.isFinite(offset)) lines.push(`Shadow edge with the sun dead ahead: ${formatNumber(360 - offset)}`);
+  if (rows.length) lines.push("", ...rows);
+  lines.push("", "Carry on with this swing here:", location.href);
+  if (els.toTable.getAttribute("aria-disabled") !== "true") lines.push("", "Make the conversion rose from it here:", els.toTable.href);
+  return mailto(`OmniRose sun swing${state.vessel ? ` for ${state.vessel}` : ""}`, lines);
 }
 
 function updateSummary(state, results, variation) {
